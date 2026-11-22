@@ -41,6 +41,11 @@ ENTRYPOINT ["node"]
 CMD ["services/identity/dist/main.js"]
 
 FROM ${NGINX_IMAGE} AS web
+# Pick up operating-system security fixes published since the base image was built, then drop back to
+# the unprivileged user the base image runs as.
+USER root
+RUN apk upgrade --no-cache
+USER 101
 COPY infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/apps/web/build /usr/share/nginx/html
 EXPOSE 8080
