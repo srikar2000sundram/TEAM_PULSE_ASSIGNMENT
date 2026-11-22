@@ -28,6 +28,10 @@ RUN npm prune --omit=dev
 FROM ${NODE_IMAGE} AS backend
 WORKDIR /app
 COPY --from=pruned --chown=node:node /app /app
+# The running services never call npm. Removing it (and corepack) drops a package manager and all of
+# its own dependencies from the image, which an attacker could otherwise use and a scanner flags.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 # Never run as root: a flaw in the service must not own the container.
 USER node
 EXPOSE 3000
