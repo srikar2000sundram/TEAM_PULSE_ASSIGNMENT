@@ -128,8 +128,8 @@ Code: [`packages/ui`](../../packages/ui) (components and tokens) and [`apps/web`
 
 ```mermaid
 flowchart TB
-    routes["Routes<br/>login, dashboard, habits,<br/>challenges, challenge detail,<br/>my activity, team activity"]
-    features["Feature state classes (runes)<br/>HabitsState, ChallengesState, ChallengeFilters,<br/>ChallengeDetail, MyAnalytics, TeamAnalytics, Session"]
+    routes["Routes<br/>login, dashboard, habits,<br/>challenges, challenge detail,<br/>my activity, team activity,<br/>notifications, administration"]
+    features["Feature state classes (runes)<br/>HabitsState, ChallengesState, ChallengeFilters,<br/>ChallengeDetail, MyAnalytics, TeamAnalytics,<br/>AdminState, NotificationsState, Session"]
     api["API layer<br/>interfaces per service, FetchHttpClient,<br/>responses checked against contracts"]
     ui["@teampulse/ui<br/>tp-progress-ring, tp-progress-card, tp-leaderboard,<br/>tp-trend-chart, tp-filter-bar"]
     tokens["tokens.css"]
@@ -157,8 +157,9 @@ session and state classes in `apps/web/src`, all in the `frontend` Vitest projec
 
 Not built yet, and honest about it:
 
-- **Admin screens** (`/admin/users`, `/admin/teams`, `/admin/challenges`) and a **notifications page**
-  (the header shows the unread count only).
+- **Admin challenge screens.** `/admin` manages people (add, disable, enable) and teams (create, add
+  members); `/notifications` lists notifications and marks them read. There is no "mark all read",
+  no password reset and no user deletion screen yet.
 - **Page-level tests.** The pages are thin and type-checked, but no test mounts them: that needs the
   SvelteKit runtime. A browser test (Playwright) against the local stack is the right tool and
   belongs with step 9, when the stack can run.

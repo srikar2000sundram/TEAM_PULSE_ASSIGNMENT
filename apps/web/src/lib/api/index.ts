@@ -13,6 +13,9 @@ import {
   teamActivityReportSchema,
   teamListResponseSchema,
   teamMemberListResponseSchema,
+  teamResponseSchema,
+  userListResponseSchema,
+  userResponseSchema,
   type ActivityResponse,
   type ChallengeListResponse,
   type ChallengeProgressResponse,
@@ -20,6 +23,8 @@ import {
   type ChallengeStatus,
   type CreateChallengeRequest,
   type CreateHabitRequest,
+  type CreateTeamRequest,
+  type CreateUserRequest,
   type HabitListResponse,
   type HabitResponse,
   type LeaderboardResponse,
@@ -30,6 +35,10 @@ import {
   type TeamActivityReport,
   type TeamListResponse,
   type TeamMemberListResponse,
+  type TeamResponse,
+  type UpdateUserRequest,
+  type UserListResponse,
+  type UserResponse,
 } from '@teampulse/contracts';
 import { FetchHttpClient, type HttpClient, type TokenSource } from './http.js';
 
@@ -49,6 +58,15 @@ export interface IdentityApi {
   logout(): Promise<void>;
   teams(): Promise<TeamListResponse>;
   teamMembers(teamId: string): Promise<TeamMemberListResponse>;
+}
+
+/** Administrator-only operations of the Identity service. */
+export interface AdminApi {
+  users(query: { limit?: number; cursor?: string }): Promise<UserListResponse>;
+  createUser(request: CreateUserRequest): Promise<UserResponse>;
+  updateUser(userId: string, request: UpdateUserRequest): Promise<UserResponse>;
+  createTeam(request: CreateTeamRequest): Promise<TeamResponse>;
+  addTeamMember(teamId: string, userId: string): Promise<void>;
 }
 
 export interface HabitApi {
@@ -85,6 +103,7 @@ export interface NotificationApi {
 
 export interface Api {
   readonly identity: IdentityApi;
+  readonly admin: AdminApi;
   readonly habits: HabitApi;
   readonly activities: ActivityApi;
   readonly challenges: ChallengeApi;
@@ -139,6 +158,37 @@ export function createApi(
           method: 'GET',
           path: `/teams/${enc(teamId)}/members`,
           schema: teamMemberListResponseSchema,
+        }),
+    },
+    admin: {
+      users: (query) =>
+        identity.request({ method: 'GET', path: '/users', query, schema: userListResponseSchema }),
+      createUser: (request) =>
+        identity.request({
+          method: 'POST',
+          path: '/users',
+          body: request,
+          schema: userResponseSchema,
+        }),
+      updateUser: (userId, request) =>
+        identity.request({
+          method: 'PATCH',
+          path: `/users/${enc(userId)}`,
+          body: request,
+          schema: userResponseSchema,
+        }),
+      createTeam: (request) =>
+        identity.request({
+          method: 'POST',
+          path: '/teams',
+          body: request,
+          schema: teamResponseSchema,
+        }),
+      addTeamMember: (teamId, userId) =>
+        identity.request({
+          method: 'POST',
+          path: `/teams/${enc(teamId)}/members`,
+          body: { userId },
         }),
     },
     habits: {

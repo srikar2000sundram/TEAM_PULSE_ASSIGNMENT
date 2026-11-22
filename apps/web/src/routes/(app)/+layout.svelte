@@ -29,6 +29,7 @@
       { href: '/challenges', label: 'Challenges', show: true },
       { href: '/analytics/me', label: 'My activity', show: !session.isAdmin },
       { href: '/analytics/team', label: session.isAdmin ? 'Organisation' : 'Team', show: true },
+      { href: '/admin', label: 'Administration', show: session.isAdmin },
     ].filter((link) => link.show),
   );
 
@@ -48,7 +49,11 @@
           <a href={link.href} aria-current={page.url.pathname.startsWith(link.href) ? 'page' : undefined}>{link.label}</a>
         {/each}
       </nav>
-      <span class="muted" aria-label="Unread notifications">🔔 {unread}</span>
+      <a
+        href="/notifications"
+        aria-label="Notifications, {unread} unread"
+        aria-current={page.url.pathname.startsWith('/notifications') ? 'page' : undefined}>🔔 {unread}</a
+      >
       <span>{session.user.displayName}</span>
       <button class="secondary" type="button" onclick={logout}>Sign out</button>
     </header>

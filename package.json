@@ -17,6 +17,7 @@
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "sync": "npm run sync --workspace @teampulse/web",
     "build": "tsc -b",
     "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
@@ -24,7 +25,7 @@
     "test": "vitest run --project unit && vitest run --project frontend && vitest run --project integration",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run docs:check",
+    "verify": "npm run format:check && npm run sync && npm run build && npm run lint && npm run typecheck && npm test && npm run docs:check",
     "local:env": "node tools/local/make-env.mjs",
     "local:up": "node tools/local/compose.mjs up",
     "local:down": "node tools/local/compose.mjs down",
