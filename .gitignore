@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+.svelte-kit/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets: never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

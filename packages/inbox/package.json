@@ -1,0 +1,31 @@
+{
+  "name": "@teampulse/inbox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Event consumer: reads messages from a queue, validates them as TeamPulse events and dispatches them to idempotent handlers",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./aws": {
+      "types": "./dist/aws.d.ts",
+      "default": "./dist/aws.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.1173.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/observability": "0.1.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@teampulse/lambda-badge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Badge Lambda: turns StreakUpdated into MilestoneReached when a streak hits a milestone",
+  "type": "module",
+  "main": "./dist/handler.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@teampulse/config": "0.1.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/inbox": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0",
+    "@teampulse/outbox": "0.1.0"
+  }
+}

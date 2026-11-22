@@ -1,0 +1,32 @@
+{
+  "name": "@teampulse/svc-insight",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Insight Service: privacy-preserving team and personal activity analytics",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "openapi:update": "node dist/cli/export-openapi.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1173.0",
+    "@aws-sdk/lib-dynamodb": "^3.1173.0",
+    "@fastify/rate-limit": "^11.2.2",
+    "@teampulse/auth": "0.1.0",
+    "@teampulse/config": "0.1.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/http": "0.1.0",
+    "@teampulse/inbox": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0",
+    "@teampulse/privacy": "0.1.0",
+    "fastify": "^5.12.8",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "jose": "^6.2.18"
+  }
+}

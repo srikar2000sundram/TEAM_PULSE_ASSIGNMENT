@@ -1,0 +1,5 @@
+# Generated artifacts and build output: never hand-formatted
+docs/api/*.openapi.json
+**/dist/
+**/coverage/
+package-lock.json

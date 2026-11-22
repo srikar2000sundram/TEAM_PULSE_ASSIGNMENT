@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "types": ["node"]
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../contracts/tsconfig.build.json" },
+    { "path": "../db/tsconfig.build.json" },
+    { "path": "../kernel/tsconfig.build.json" },
+    { "path": "../observability/tsconfig.build.json" }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@teampulse/outbox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Transactional outbox: validated event creation and the outbox table every producing service writes to",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./aws": {
+      "types": "./dist/aws.d.ts",
+      "default": "./dist/aws.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.1173.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/db": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0"
+  },
+  "devDependencies": {
+    "@teampulse/testing": "0.1.0"
+  }
+}

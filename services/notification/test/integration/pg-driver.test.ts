@@ -1,0 +1,35 @@
+import { PgDatabase, migrate } from '@teampulse/db';
+import { startPgWireServer } from '@teampulse/testing';
+import { MIGRATIONS } from '../../src/adapters/persistence/migrations.js';
+import { PostgresUnitOfWork } from '../../src/adapters/persistence/repositories.js';
+import { repositoryContract, type RepositoryFixture } from '../support/repository-contract.js';
+
+/**
+ * The repositories through the class production uses, `PgDatabase`, over the real `pg` driver and
+ * the PostgreSQL wire protocol. This is where text[] and uuid[] parameters, jsonb and date columns
+ * meet the real driver.
+ */
+repositoryContract('PostgreSQL via the real pg driver', async () => {
+  const server = await startPgWireServer('notification');
+  // The embedded engine serves one connection at a time, hence a pool of one.
+  const db = new PgDatabase({
+    connectionString: server.url,
+    schema: 'notification',
+    maxConnections: 1,
+    ssl: false,
+  });
+  await migrate(db, MIGRATIONS);
+  const fixture: RepositoryFixture = {
+    uow: new PostgresUnitOfWork(db),
+    reset: async () => {
+      await db.exec(
+        'TRUNCATE notifications, notification_preferences, reminders, reminder_occurrences, challenge_participants',
+      );
+    },
+    close: async () => {
+      await db.close();
+      await server.close();
+    },
+  };
+  return fixture;
+});

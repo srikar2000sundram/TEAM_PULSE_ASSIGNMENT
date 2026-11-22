@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify (format, lint, types, tests, docs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
+
+  audit:
+    name: Dependency audit (production, high and above)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm audit --omit=dev --audit-level=high
+
+  images:
+    name: Build and scan images
+    runs-on: ubuntu-latest
+    needs: verify
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -f infra/docker/Dockerfile --target backend -t teampulse/backend:ci .
+      - name: Build web image
+        run: docker build -f infra/docker/Dockerfile --target web -t teampulse/web:ci .
+      - name: Scan images (fail on fixable high or critical)
+        run: |
+          for image in teampulse/backend:ci teampulse/web:ci; do
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+              aquasec/trivy:0.58.0 image --exit-code 1 --severity HIGH,CRITICAL \
+              --ignore-unfixed "$image"
+          done

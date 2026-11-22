@@ -1,0 +1,27 @@
+{
+  "name": "@teampulse/testing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Test support: real PostgreSQL (PGlite, in-process) behind the Database port. Use as a devDependency only",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.17",
+    "@electric-sql/pglite-socket": "^0.2.20",
+    "@teampulse/db": "0.1.0"
+  }
+}

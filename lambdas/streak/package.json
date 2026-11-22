@@ -1,0 +1,22 @@
+{
+  "name": "@teampulse/lambda-streak",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Streak Lambda: turns ActivityCompleted into StreakUpdated, keeping per-habit streak state in DynamoDB",
+  "type": "module",
+  "main": "./dist/handler.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1173.0",
+    "@aws-sdk/lib-dynamodb": "^3.1173.0",
+    "@teampulse/config": "0.1.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/inbox": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0",
+    "@teampulse/outbox": "0.1.0"
+  }
+}

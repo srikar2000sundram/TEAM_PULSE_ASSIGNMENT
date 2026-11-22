@@ -1,0 +1,48 @@
+/*
+ * Design tokens: the one place where visual values are defined (ADR-0008).
+ * Components use only var(--tp-*). Custom properties cross the shadow DOM boundary, so a host can
+ * theme every component by setting them on any ancestor. Changes here go through review.
+ */
+:root {
+  --tp-color-bg: #ffffff;
+  --tp-color-surface: #f6f7f9;
+  --tp-color-text: #1b2330;
+  --tp-color-text-muted: #55627a;
+  --tp-color-border: #d5dae3;
+  --tp-color-accent: #2257d6;
+  --tp-color-accent-contrast: #ffffff;
+  --tp-color-positive: #1c7a43;
+  --tp-color-negative: #b3261e;
+  --tp-color-track: #e3e7ee;
+  --tp-color-focus: #1a73e8;
+
+  --tp-space-1: 0.25rem;
+  --tp-space-2: 0.5rem;
+  --tp-space-3: 0.75rem;
+  --tp-space-4: 1rem;
+  --tp-space-6: 1.5rem;
+
+  --tp-radius-1: 0.375rem;
+  --tp-radius-2: 0.75rem;
+
+  --tp-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --tp-font-size-1: 0.8125rem;
+  --tp-font-size-2: 1rem;
+  --tp-font-size-3: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tp-color-bg: #11161f;
+    --tp-color-surface: #1a212d;
+    --tp-color-text: #e8ecf3;
+    --tp-color-text-muted: #9aa7bd;
+    --tp-color-border: #333d4f;
+    --tp-color-accent: #7ea6ff;
+    --tp-color-accent-contrast: #0b1020;
+    --tp-color-positive: #5fd08a;
+    --tp-color-negative: #ff8a80;
+    --tp-color-track: #2b3445;
+    --tp-color-focus: #8ab4ff;
+  }
+}

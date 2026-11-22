@@ -1,0 +1,24 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/kernel/tsconfig.build.json" },
+    { "path": "packages/contracts/tsconfig.build.json" },
+    { "path": "packages/observability/tsconfig.build.json" },
+    { "path": "packages/config/tsconfig.build.json" },
+    { "path": "packages/auth/tsconfig.build.json" },
+    { "path": "packages/http/tsconfig.build.json" },
+    { "path": "packages/db/tsconfig.build.json" },
+    { "path": "packages/outbox/tsconfig.build.json" },
+    { "path": "packages/inbox/tsconfig.build.json" },
+    { "path": "packages/privacy/tsconfig.build.json" },
+    { "path": "packages/testing/tsconfig.build.json" },
+    { "path": "services/identity/tsconfig.build.json" },
+    { "path": "services/habit/tsconfig.build.json" },
+    { "path": "services/event-tracking/tsconfig.build.json" },
+    { "path": "services/notification/tsconfig.build.json" },
+    { "path": "services/insight/tsconfig.build.json" },
+    { "path": "services/challenge/tsconfig.build.json" },
+    { "path": "lambdas/streak/tsconfig.build.json" },
+    { "path": "lambdas/badge/tsconfig.build.json" }
+  ]
+}

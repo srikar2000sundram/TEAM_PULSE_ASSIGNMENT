@@ -1,0 +1,35 @@
+{
+  "name": "@teampulse/svc-identity",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Identity Service: login, JWT issuing, roles, teams and memberships",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "migrate": "node dist/adapters/persistence/migrate-cli.js",
+    "bootstrap-admin": "node dist/cli/bootstrap-admin.js",
+    "openapi:update": "node dist/cli/export-openapi.js"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.5",
+    "@fastify/rate-limit": "^11.2.2",
+    "@node-rs/argon2": "^2.2.2",
+    "@teampulse/auth": "0.1.0",
+    "@teampulse/config": "0.1.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/db": "0.1.0",
+    "@teampulse/http": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0",
+    "@teampulse/outbox": "0.1.0",
+    "fastify": "^5.12.8",
+    "jose": "^6.2.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@teampulse/testing": "0.1.0"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@teampulse/db",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PostgreSQL access shared by every service: pooled Database port, migration runner, transient-error classification",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@teampulse/observability": "0.1.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.17",
+    "@electric-sql/pglite-socket": "^0.2.20",
+    "@teampulse/testing": "0.1.0",
+    "@types/pg": "^8.23.1"
+  }
+}

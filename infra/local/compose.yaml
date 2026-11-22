@@ -1,0 +1,247 @@
+# The whole platform on one computer: PostgreSQL, LocalStack (a pretend AWS with the event bus, queues
+# and DynamoDB), the six services, the Lambda functions and the web app behind one address.
+#
+#   node tools/local/make-env.mjs          once: creates infra/local/.env with random secrets
+#   node tools/local/compose.mjs up        builds and starts everything (docker or podman)
+#   open http://localhost:8080
+#
+# Every service uses the same backend image; only the command differs. Settings come from here and
+# from infra/local/.env, never from files baked into the image.
+
+name: teampulse
+
+x-aws:
+  &aws # The AWS SDK reads these standard settings, so the code is identical to what runs in AWS.
+  AWS_ENDPOINT_URL: http://localstack:4566
+  AWS_ACCESS_KEY_ID: test
+  AWS_SECRET_ACCESS_KEY: test
+  AWS_REGION: eu-west-1
+  EVENT_BUS_NAME: teampulse-bus
+
+x-database: &database
+  DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:?run node tools/local/make-env.mjs}@postgres:5432/teampulse
+
+x-common: &common
+  LOG_LEVEL: info
+  LOG_PSEUDONYM_SALT: ${LOG_PSEUDONYM_SALT}
+  PORT: '3000'
+
+x-auth: &auth
+  IDENTITY_JWKS_URL: http://identity:3000/api/v1/identity/.well-known/jwks.json
+
+x-backend: &backend
+  image: teampulse/backend:local
+  restart: unless-stopped
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+    aws-setup:
+      condition: service_completed_successfully
+  healthcheck:
+    test:
+      [
+        'CMD',
+        'node',
+        '-e',
+        "fetch('http://localhost:3000/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))",
+      ]
+    interval: 10s
+    timeout: 5s
+    retries: 12
+    start_period: 10s
+
+services:
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run node tools/local/make-env.mjs}
+      POSTGRES_DB: teampulse
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      # 5433 on your computer, so it never clashes with a PostgreSQL you installed yourself.
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U postgres -d teampulse']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  localstack:
+    # The last community release that needs no account token. Newer ones refuse to start without one.
+    image: docker.io/localstack/localstack:3.8.1
+    environment:
+      SERVICES: sqs,events,dynamodb
+      # Queue URLs look like http://localstack:4566/queue/<region>/<account>/<name>, with a host name the
+      # other containers can reach (the default one only works from your own computer).
+      SQS_ENDPOINT_STRATEGY: path
+      LOCALSTACK_HOST: localstack:4566
+    ports:
+      - '4566:4566'
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf http://localhost:4566/_localstack/health']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # One-off: creates the event bus, queues, rules and tables. Safe to run again.
+  aws-setup:
+    image: teampulse/backend:local
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      localstack:
+        condition: service_started
+    environment:
+      <<: *aws
+    command: ['tools/local/setup-aws.mjs']
+
+  # One-off: builds the image, creates every schema and table, and the first administrator.
+  migrate:
+    image: teampulse/backend:local
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+      target: backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: [*database, *common]
+      JWT_PRIVATE_KEY_PEM: ${JWT_PRIVATE_KEY_PEM}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    entrypoint: ['sh', '-c']
+    command:
+      - >
+        node services/identity/dist/adapters/persistence/migrate-cli.js &&
+        node services/habit/dist/adapters/persistence/migrate-cli.js &&
+        node services/event-tracking/dist/adapters/persistence/migrate-cli.js &&
+        node services/challenge/dist/adapters/persistence/migrate-cli.js &&
+        node services/notification/dist/adapters/persistence/migrate-cli.js &&
+        (node services/identity/dist/cli/bootstrap-admin.js ||
+         echo "bootstrap-admin skipped: an administrator probably exists already")
+
+  identity:
+    <<: *backend
+    environment:
+      <<: [*aws, *database, *common]
+      JWT_PRIVATE_KEY_PEM: ${JWT_PRIVATE_KEY_PEM}
+      # Plain http on localhost: the cookie is Secure in AWS.
+      COOKIE_SECURE: 'false'
+      TRUST_PROXY: 'true'
+    command: ['services/identity/dist/main.js']
+
+  habit:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *database, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-habit
+      TRUST_PROXY: 'true'
+    command: ['services/habit/dist/main.js']
+
+  event-tracking:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *database, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-event-tracking
+      TRUST_PROXY: 'true'
+    command: ['services/event-tracking/dist/main.js']
+
+  challenge:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *database, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-challenge
+      TRUST_PROXY: 'true'
+    command: ['services/challenge/dist/main.js']
+
+  notification:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *database, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-notification
+      TRUST_PROXY: 'true'
+    command: ['services/notification/dist/main.js']
+
+  insight:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-insight
+      AGGREGATES_TABLE_NAME: teampulse-insight-aggregates
+      PERSONAL_TABLE_NAME: teampulse-insight-personal
+      INSIGHT_PSEUDONYM_KEY: ${INSIGHT_PSEUDONYM_KEY}
+      TRUST_PROXY: 'true'
+    command: ['services/insight/dist/main.js']
+
+  # The streak and badge Lambda functions, run by a small runner that reads their queues.
+  lambdas:
+    <<: *backend
+    healthcheck:
+      disable: true
+    environment:
+      <<: [*aws, *common]
+      STREAK_TABLE_NAME: teampulse-streaks
+    command: ['tools/local/lambda-runner.mjs']
+
+  web:
+    image: teampulse/web:local
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile
+      target: web
+    depends_on:
+      identity:
+        condition: service_healthy
+      habit:
+        condition: service_healthy
+      event-tracking:
+        condition: service_healthy
+      challenge:
+        condition: service_healthy
+      notification:
+        condition: service_healthy
+      insight:
+        condition: service_healthy
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

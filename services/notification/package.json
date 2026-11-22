@@ -1,0 +1,32 @@
+{
+  "name": "@teampulse/svc-notification",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Notification Service: in-app notifications, preferences and habit reminders",
+  "type": "module",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "migrate": "node dist/adapters/persistence/migrate-cli.js",
+    "openapi:update": "node dist/cli/export-openapi.js"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^11.2.2",
+    "@teampulse/auth": "0.1.0",
+    "@teampulse/config": "0.1.0",
+    "@teampulse/contracts": "0.1.0",
+    "@teampulse/db": "0.1.0",
+    "@teampulse/http": "0.1.0",
+    "@teampulse/inbox": "0.1.0",
+    "@teampulse/kernel": "0.1.0",
+    "@teampulse/observability": "0.1.0",
+    "fastify": "^5.12.8",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@teampulse/testing": "0.1.0",
+    "jose": "^6.2.18"
+  }
+}

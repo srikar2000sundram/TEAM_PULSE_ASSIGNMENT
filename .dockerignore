@@ -1,0 +1,13 @@
+# Keep the build context small and keep secrets out of images.
+**/node_modules
+**/dist
+**/build
+**/.svelte-kit
+**/coverage
+**/*.tsbuildinfo
+.git
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
