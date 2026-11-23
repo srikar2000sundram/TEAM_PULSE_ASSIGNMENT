@@ -3,3 +3,6 @@ docs/api/*.openapi.json
 **/dist/
 **/coverage/
 package-lock.json
+
+# Personal notes (guides, demo scripts), kept on my computer and not published
+docs/guides/

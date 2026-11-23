@@ -13,9 +13,10 @@ flowchart LR
         et["Event Tracking"]
         in["Insight"]
         nt["Notification"]
+        rc["Recommendation"]
     end
 
-    fe --> id & hb & ch & et & in & nt
+    fe --> id & hb & ch & et & in & nt & rc
 
     hb -. "validates team membership<br/>(JWT claims, no call)" .- id
     ch -. "validates team membership<br/>(JWT claims, no call)" .- id
@@ -118,7 +119,7 @@ The Identity Service is described in detail in [07 Identity Service](07-identity
 Habit Service in [08 Habit Service](08-habit-service.md) Event Tracking with the event plumbing in
 [09 Event Tracking](09-event-tracking.md), the Lambdas in [10](10-lambdas.md), Notification in
 [11](11-notification-service.md), Insight in [12](12-insight-service.md) and Challenge in
-[13](13-challenge-service.md).
+[13](13-challenge-service.md), and Recommendation in [18](18-recommendation-service.md).
 
 ## Service catalogue
 
@@ -130,6 +131,7 @@ Habit Service in [08 Habit Service](08-habit-service.md) Event Tracking with the
 | Event Tracking | Activity log, outbox, streak read model                            | RDS `eventtracking`  | `ActivityCompleted`                                                                 | `StreakUpdated`, `HabitCreated`, `HabitUpdated`, `HabitArchived`, `UserDeleted`                                                             |
 | Insight        | Aggregated analytics: team cells (pseudonymous), personal counters | DynamoDB, two tables | none                                                                                | `ActivityCompleted`, `UserDeleted`                                                                                                          |
 | Notification   | Preferences, notification log                                      | RDS `notification`   | none                                                                                | `MilestoneReached`, `BadgeAwarded`, `ChallengeJoined`, `ChallengeCompleted`, `HabitCreated`, `HabitUpdated`, `HabitArchived`, `UserDeleted` |
+| Recommendation | Completion times, accepted or dismissed timing recommendations     | RDS `recommendation` | none                                                                                | `ActivityCompleted`, `UserDeleted`                                                                                                          |
 
 ## Internal architecture of every service
 

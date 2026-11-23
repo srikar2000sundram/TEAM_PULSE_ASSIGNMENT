@@ -6,6 +6,7 @@ export * from './identity.js';
 export * from './insight.js';
 export * from './notification.js';
 export * from './problem.js';
+export * from './recommendation.js';
 export * from './events/envelope.js';
 export * from './events/payloads.js';
 export * from './events/registry.js';

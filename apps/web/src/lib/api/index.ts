@@ -9,6 +9,8 @@ import {
   myActivityReportSchema,
   notificationListResponseSchema,
   notificationResponseSchema,
+  decisionResponseSchema,
+  recommendationListResponseSchema,
   sessionResponseSchema,
   teamActivityReportSchema,
   teamListResponseSchema,
@@ -25,12 +27,16 @@ import {
   type CreateHabitRequest,
   type CreateTeamRequest,
   type CreateUserRequest,
+  type DecideRecommendationRequest,
+  type DecisionResponse,
   type HabitListResponse,
   type HabitResponse,
   type LeaderboardResponse,
   type MyActivityReport,
   type NotificationListResponse,
   type NotificationResponse,
+  type RecommendationListResponse,
+  type UpdateHabitRequest,
   type SessionResponse,
   type TeamActivityReport,
   type TeamListResponse,
@@ -73,6 +79,7 @@ export interface HabitApi {
   list(query: { status?: 'active' | 'archived'; limit?: number }): Promise<HabitListResponse>;
   create(request: CreateHabitRequest): Promise<HabitResponse>;
   archive(habitId: string): Promise<HabitResponse>;
+  update(habitId: string, request: UpdateHabitRequest): Promise<HabitResponse>;
 }
 
 export interface ActivityApi {
@@ -101,6 +108,12 @@ export interface NotificationApi {
   markRead(notificationId: string): Promise<NotificationResponse>;
 }
 
+export interface RecommendationApi {
+  list(timeZone: string): Promise<RecommendationListResponse>;
+  accept(habitId: string, request: DecideRecommendationRequest): Promise<DecisionResponse>;
+  dismiss(habitId: string, request: DecideRecommendationRequest): Promise<DecisionResponse>;
+}
+
 export interface Api {
   readonly identity: IdentityApi;
   readonly admin: AdminApi;
@@ -109,6 +122,7 @@ export interface Api {
   readonly challenges: ChallengeApi;
   readonly insight: InsightApi;
   readonly notifications: NotificationApi;
+  readonly recommendations: RecommendationApi;
 }
 
 const BASE = '/api/v1';
@@ -131,6 +145,7 @@ export function createApi(
   const challenge = client('challenge');
   const insight = client('insight');
   const notification = client('notification');
+  const recommendation = client('recommendation');
   const enc = encodeURIComponent;
 
   return {
@@ -205,6 +220,13 @@ export function createApi(
         habit.request({
           method: 'POST',
           path: `/habits/${enc(habitId)}/archive`,
+          schema: habitResponseSchema,
+        }),
+      update: (habitId, request) =>
+        habit.request({
+          method: 'PATCH',
+          path: `/habits/${enc(habitId)}`,
+          body: request,
           schema: habitResponseSchema,
         }),
     },
@@ -305,6 +327,29 @@ export function createApi(
           method: 'POST',
           path: `/notifications/${enc(id)}/read`,
           schema: notificationResponseSchema,
+        }),
+    },
+    recommendations: {
+      list: (timeZone) =>
+        recommendation.request({
+          method: 'GET',
+          path: '/recommendations',
+          query: { timeZone },
+          schema: recommendationListResponseSchema,
+        }),
+      accept: (habitId, request) =>
+        recommendation.request({
+          method: 'POST',
+          path: `/recommendations/${enc(habitId)}/accept`,
+          body: request,
+          schema: decisionResponseSchema,
+        }),
+      dismiss: (habitId, request) =>
+        recommendation.request({
+          method: 'POST',
+          path: `/recommendations/${enc(habitId)}/dismiss`,
+          body: request,
+          schema: decisionResponseSchema,
         }),
     },
   };

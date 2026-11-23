@@ -59,6 +59,7 @@ flowchart TB
         evt["Event Tracking Service"]
         insight["Insight Service"]
         notif["Notification Service"]
+        reco["Recommendation Service"]
     end
 
     subgraph async["Event-driven layer"]
@@ -78,7 +79,7 @@ flowchart TB
     browser --> cf
     cf --> s3
     browser -->|"API calls"| alb
-    alb --> idsvc & habit & chal & evt & insight & notif
+    alb --> idsvc & habit & chal & evt & insight & notif & reco
 
     idsvc & habit & chal & evt & notif --> rds
     evt -->|"publishes events"| bus
@@ -86,7 +87,7 @@ flowchart TB
     bus --> sqs
     lam --> ddb
     lam -->|"emits derived events"| bus
-    sqs --> chal & notif & insight & evt
+    sqs --> chal & notif & insight & evt & reco
     insight --> ddb
 
     app -. "reads secrets" .-> sm
@@ -105,6 +106,7 @@ flowchart TB
 | Event Tracking    | Node, Fastify, PostgreSQL | Records activity completions, publishes events, streak reads |
 | Insight Service   | Node, Fastify, DynamoDB   | Aggregated team analytics and self-only individual analytics |
 | Notification      | Node, Fastify, PostgreSQL | Reminders, challenge updates, milestone messages             |
+| Recommendation    | Node, Fastify, PostgreSQL | Personal timing recommendations from a person's own history  |
 | Lambdas           | Node, TypeScript          | Streaks, badge evaluation, analytics aggregation             |
 
 ## Key architectural rules

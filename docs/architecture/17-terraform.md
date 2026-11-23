@@ -16,7 +16,7 @@ flowchart TB
     waf --> cf["CloudFront<br/>HTTPS, security headers, HSTS"]
     cf -->|"everything else"| s3[("S3 web bucket<br/>private, origin access control")]
     cf -->|"/api/*  + secret header"| alb["Application Load Balancer<br/>public subnets"]
-    alb --> ecs["6 ECS Fargate services<br/>private app subnets"]
+    alb --> ecs["7 ECS Fargate services<br/>private app subnets"]
     ecs --> rds[("RDS PostgreSQL 16<br/>data subnets, no internet route")]
     ecs --> ddb[("DynamoDB<br/>insight tables")]
     ecs --> sqs["SQS queue + dead-letter queue<br/>per consumer"]

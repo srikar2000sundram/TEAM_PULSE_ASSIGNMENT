@@ -23,6 +23,7 @@ export const SERVICE_QUEUES = {
   ],
   challenge: ['ActivityCompleted', 'TeamMembershipChanged', 'UserDeleted'],
   insight: ['ActivityCompleted', 'UserDeleted'],
+  recommendation: ['ActivityCompleted', 'UserDeleted'],
 };
 
 /** Lambda functions. In AWS the rule invokes the function; locally a runner reads this queue. */

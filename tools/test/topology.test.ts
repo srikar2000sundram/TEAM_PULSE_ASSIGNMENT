@@ -5,6 +5,7 @@ import { buildEventTrackingEventHandlers } from '../../services/event-tracking/s
 import { buildHabitEventHandlers } from '../../services/habit/src/adapters/events/handlers.js';
 import { buildInsightEventHandlers } from '../../services/insight/src/adapters/events/handlers.js';
 import { buildNotificationEventHandlers } from '../../services/notification/src/adapters/events/handlers.js';
+import { buildRecommendationEventHandlers } from '../../services/recommendation/src/adapters/events/handlers.js';
 import { LAMBDA_QUEUES, SERVICE_QUEUES, allQueues, patternFor } from '../local/topology.mjs';
 
 /** The handlers a service registers, without needing its use cases (they are only closed over). */
@@ -21,6 +22,9 @@ describe('event routing (tools/local/topology.mjs)', () => {
     );
     expect([...SERVICE_QUEUES.challenge].sort()).toEqual(registered(buildChallengeEventHandlers));
     expect([...SERVICE_QUEUES.insight].sort()).toEqual(registered(buildInsightEventHandlers));
+    expect([...SERVICE_QUEUES.recommendation].sort()).toEqual(
+      registered(buildRecommendationEventHandlers),
+    );
   });
 
   it('only routes event types that exist in the contracts', () => {

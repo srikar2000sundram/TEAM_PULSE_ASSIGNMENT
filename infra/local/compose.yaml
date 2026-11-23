@@ -119,6 +119,7 @@ services:
         node services/event-tracking/dist/adapters/persistence/migrate-cli.js &&
         node services/challenge/dist/adapters/persistence/migrate-cli.js &&
         node services/notification/dist/adapters/persistence/migrate-cli.js &&
+        node services/recommendation/dist/adapters/persistence/migrate-cli.js &&
         (node services/identity/dist/cli/bootstrap-admin.js ||
          echo "bootstrap-admin skipped: an administrator probably exists already")
 
@@ -192,6 +193,21 @@ services:
       TRUST_PROXY: 'true'
     command: ['services/notification/dist/main.js']
 
+  recommendation:
+    <<: *backend
+    depends_on:
+      identity:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      aws-setup:
+        condition: service_completed_successfully
+    environment:
+      <<: [*aws, *database, *common, *auth]
+      EVENTS_QUEUE_URL: http://localstack:4566/queue/eu-west-1/000000000000/teampulse-recommendation
+      TRUST_PROXY: 'true'
+    command: ['services/recommendation/dist/main.js']
+
   insight:
     <<: *backend
     depends_on:
@@ -236,6 +252,8 @@ services:
       challenge:
         condition: service_healthy
       notification:
+        condition: service_healthy
+      recommendation:
         condition: service_healthy
       insight:
         condition: service_healthy

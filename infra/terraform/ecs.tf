@@ -365,6 +365,7 @@ resource "aws_ecs_task_definition" "migrate" {
       "node services/event-tracking/dist/adapters/persistence/migrate-cli.js",
       "node services/challenge/dist/adapters/persistence/migrate-cli.js",
       "node services/notification/dist/adapters/persistence/migrate-cli.js",
+      "node services/recommendation/dist/adapters/persistence/migrate-cli.js",
       "(node services/identity/dist/cli/bootstrap-admin.js || echo 'bootstrap-admin skipped: an administrator probably exists already')",
     ])]
     environment = [

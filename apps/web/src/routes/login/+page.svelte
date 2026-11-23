@@ -32,8 +32,10 @@
 
 <svelte:head><title>Sign in · TeamPulse</title></svelte:head>
 
-<main style="max-width: 24rem; margin: 4rem auto; padding: 0 1rem">
-  <h1>TeamPulse</h1>
+<main class="auth">
+  <div class="auth-panel">
+  <div class="brand">TeamPulse</div>
+  <p class="tagline">Healthy habits, together.</p>
   <form class="card stack" onsubmit={submit}>
     <label class="field">Email
       <input type="email" autocomplete="username" required bind:value={email} />
@@ -44,4 +46,5 @@
     {#if error}<p class="notice error" role="alert">{error}</p>{/if}
     <button class="primary" type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
   </form>
+  </div>
 </main>

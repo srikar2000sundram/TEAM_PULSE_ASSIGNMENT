@@ -26,6 +26,7 @@ locals {
     challenge      = { priority = 40, cpu = 256, memory = 512, queue = true, database = true, dynamodb = false, publishes = true }
     insight        = { priority = 50, cpu = 256, memory = 512, queue = true, database = false, dynamodb = true, publishes = false }
     notification   = { priority = 60, cpu = 256, memory = 512, queue = true, database = true, dynamodb = false, publishes = false }
+    recommendation = { priority = 70, cpu = 256, memory = 512, queue = true, database = true, dynamodb = false, publishes = false }
   }
 
   # Who listens to which events. This mirrors tools/local/topology.mjs, which a unit test checks
@@ -37,6 +38,7 @@ locals {
     notification   = ["MilestoneReached", "BadgeAwarded", "ChallengeJoined", "ChallengeCompleted", "HabitCreated", "HabitUpdated", "HabitArchived", "UserDeleted"]
     challenge      = ["ActivityCompleted", "TeamMembershipChanged", "UserDeleted"]
     insight        = ["ActivityCompleted", "UserDeleted"]
+    recommendation = ["ActivityCompleted", "UserDeleted"]
   }
 
   lambdas = {

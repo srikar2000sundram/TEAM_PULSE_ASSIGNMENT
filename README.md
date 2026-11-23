@@ -5,6 +5,19 @@ team challenges; managers see only **aggregated** trends, never personal wellnes
 
 Based on `Case Study 2 - TeamPulse.pdf` (microservices, SvelteKit with runes, AWS deployment).
 
+## Submission index
+
+| #   | Deliverable                                                 | Where                                                                                                                                                                                                            |
+| --- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Source code with commits                                    | this repository                                                                                                                                                                                                  |
+| 2   | Architecture overview, including the Recommendation service | this README, [01 System context](docs/architecture/01-system-context.md), [02 Microservices](docs/architecture/02-microservices.md), [18 Recommendation Service](docs/architecture/18-recommendation-service.md) |
+| 3   | Setup guide (Docker Compose)                                | [docs/SETUP.md](docs/SETUP.md)                                                                                                                                                                                   |
+| 4   | API documentation (OpenAPI), including Recommendation       | [docs/api](docs/api) (an OpenAPI file and a guide per service), [Recommendation API](docs/api/recommendation.md)                                                                                                 |
+| 5   | User walkthrough                                            | [docs/USER-WALKTHROUGH.md](docs/USER-WALKTHROUGH.md)                                                                                                                                                             |
+| 6   | Network architecture diagram                                | [19 Network architecture](docs/architecture/19-network-architecture.md)                                                                                                                                          |
+| 7   | Cloud deployment documentation                              | [17 Terraform](docs/architecture/17-terraform.md); deployment record with screenshots: added after deployment                                                                                                    |
+| 8   | Demo recording                                              | added after deployment                                                                                                                                                                                           |
+
 ## Start here
 
 | Read this                                                                             | To understand                                    |
@@ -24,6 +37,8 @@ Based on `Case Study 2 - TeamPulse.pdf` (microservices, SvelteKit with runes, AW
 | [10 Lambdas](docs/architecture/10-lambdas.md)                                         | Streak and badge Lambdas, retry safety           |
 | [11 Notification Service](docs/architecture/11-notification-service.md)               | Notifications, preferences, reminders            |
 | [Notification API](docs/api/notification.md)                                          | Endpoints, errors, examples                      |
+| [18 Recommendation Service](docs/architecture/18-recommendation-service.md)           | Personalised timing recommendations              |
+| [Recommendation API](docs/api/recommendation.md)                                      | Endpoints, errors, examples                      |
 | [12 Insight Service](docs/architecture/12-insight-service.md)                         | Privacy-preserving analytics, K-anonymity        |
 | [Insight API](docs/api/insight.md)                                                    | Endpoints, errors, examples                      |
 | [13 Challenge Service](docs/architecture/13-challenge-service.md)                     | Challenges, scoring, leaderboards, badges        |
@@ -43,7 +58,7 @@ Based on `Case Study 2 - TeamPulse.pdf` (microservices, SvelteKit with runes, AW
 flowchart TB
     root["teampulse/"]
     root --> apps["apps/<br/>web: SvelteKit dashboard"]
-    root --> services["services/<br/>identity, habit, challenge,<br/>event-tracking, insight, notification"]
+    root --> services["services/<br/>identity, habit, challenge,<br/>event-tracking, insight, notification,<br/>recommendation"]
     root --> lambdas["lambdas/<br/>streak, badge"]
     root --> packages["packages/<br/>contracts, ui, observability"]
     root --> infra["infra/<br/>Terraform modules and environments"]

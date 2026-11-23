@@ -99,21 +99,21 @@ at both producer and consumer.
 
 ## Event catalogue
 
-| Event                      | Producer       | Consumers                                                                         | Purpose                                        |
-| -------------------------- | -------------- | --------------------------------------------------------------------------------- | ---------------------------------------------- |
-| `ActivityCompleted`        | Event Tracking | Streak Lambda, Badge Lambda (totals), Challenge, Insight                          | A habit was completed                          |
-| `StreakUpdated`            | Streak Lambda  | Badge Lambda, Event Tracking                                                      | New current and longest streak                 |
-| `BadgeAwarded`             | Challenge      | Notification                                                                      | A challenge badge rule was met                 |
-| `ChallengeProgressUpdated` | Challenge      | none yet                                                                          | A participant scored a point                   |
-| `MilestoneReached`         | Badge Lambda   | Notification                                                                      | Streak or total milestone message              |
-| `ChallengeJoined`          | Challenge      | Notification                                                                      | User joined a challenge                        |
-| `ChallengeCompleted`       | Challenge      | Notification                                                                      | Final standings are available                  |
-| `HabitCreated`             | Habit          | Notification, Event Tracking                                                      | Schedule a reminder; learn the habit           |
-| `HabitUpdated`             | Habit          | Notification, Event Tracking                                                      | Replace or drop the reminder; new type         |
-| `HabitArchived`            | Habit          | Notification, Event Tracking                                                      | Cancel the reminder; stop accepting activities |
-| `UserRegistered`           | Identity       | none yet                                                                          | New account exists                             |
-| `TeamMembershipChanged`    | Identity       | Habit, Challenge                                                                  | Keep team-scoped data consistent               |
-| `UserDeleted`              | Identity       | every service (Habit, Event Tracking, Notification, Challenge, Insight handle it) | Erase or anonymise the user                    |
+| Event                      | Producer       | Consumers                                                                                         | Purpose                                        |
+| -------------------------- | -------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `ActivityCompleted`        | Event Tracking | Streak Lambda, Badge Lambda (totals), Challenge, Insight, Recommendation                          | A habit was completed                          |
+| `StreakUpdated`            | Streak Lambda  | Badge Lambda, Event Tracking                                                                      | New current and longest streak                 |
+| `BadgeAwarded`             | Challenge      | Notification                                                                                      | A challenge badge rule was met                 |
+| `ChallengeProgressUpdated` | Challenge      | none yet                                                                                          | A participant scored a point                   |
+| `MilestoneReached`         | Badge Lambda   | Notification                                                                                      | Streak or total milestone message              |
+| `ChallengeJoined`          | Challenge      | Notification                                                                                      | User joined a challenge                        |
+| `ChallengeCompleted`       | Challenge      | Notification                                                                                      | Final standings are available                  |
+| `HabitCreated`             | Habit          | Notification, Event Tracking                                                                      | Schedule a reminder; learn the habit           |
+| `HabitUpdated`             | Habit          | Notification, Event Tracking                                                                      | Replace or drop the reminder; new type         |
+| `HabitArchived`            | Habit          | Notification, Event Tracking                                                                      | Cancel the reminder; stop accepting activities |
+| `UserRegistered`           | Identity       | none yet                                                                                          | New account exists                             |
+| `TeamMembershipChanged`    | Identity       | Habit, Challenge                                                                                  | Keep team-scoped data consistent               |
+| `UserDeleted`              | Identity       | every service (Habit, Event Tracking, Notification, Challenge, Insight, Recommendation handle it) | Erase or anonymise the user                    |
 
 Naming rules: past-tense, `PascalCase`, versioned through `schemaVersion`. Breaking changes
 add a new version and run both until consumers migrate.

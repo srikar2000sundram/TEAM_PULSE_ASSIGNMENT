@@ -106,6 +106,7 @@ describe('HabitsState', () => {
         habits.splice(0, 1);
         return Promise.resolve(habit(1));
       },
+      update: () => Promise.resolve(habit(1)),
     };
     const activityApi: ActivityApi = {
       record:

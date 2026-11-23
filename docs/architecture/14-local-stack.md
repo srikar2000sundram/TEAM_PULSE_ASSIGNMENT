@@ -20,17 +20,18 @@ flowchart LR
         challenge["challenge"]
         notification["notification"]
         insight["insight"]
+        recommendation["recommendation"]
         lambdas["lambdas<br/>runner for streak and badge"]
     end
 
-    web --> identity & habit & et & challenge & notification & insight
+    web --> identity & habit & et & challenge & notification & insight & recommendation
 
     pg[("postgres<br/>one database,<br/>a schema per service")]
     ls["localstack<br/>EventBridge, SQS, DynamoDB"]
 
-    identity & habit & et & challenge & notification --> pg
+    identity & habit & et & challenge & notification & recommendation --> pg
     habit & et & challenge & identity -- "outbox relay: PutEvents" --> ls
-    ls -- "rules route to queues" --> habit & et & challenge & notification & insight & lambdas
+    ls -- "rules route to queues" --> habit & et & challenge & notification & insight & recommendation & lambdas
     lambdas --> ls
     insight --> ls
 
@@ -44,7 +45,7 @@ flowchart LR
 | `localstack`             | `localstack/localstack:3.8.1` | A pretend AWS: the event bus, queues and DynamoDB                               |
 | `migrate`                | `teampulse/backend:local`     | Creates every schema and table, then the first administrator, then exits        |
 | `aws-setup`              | `teampulse/backend:local`     | Creates the bus, queues (with dead-letter queues), rules and tables, then exits |
-| `identity` ... `insight` | `teampulse/backend:local`     | The six services; each listens on port 3000 inside its container                |
+| `identity` ... `insight` | `teampulse/backend:local`     | The seven services; each listens on port 3000 inside its container              |
 | `lambdas`                | `teampulse/backend:local`     | Runs the streak and badge functions by reading their queues                     |
 | `web`                    | `teampulse/web:local`         | nginx: serves the app and routes `/api/v1/<service>/` to the right service      |
 

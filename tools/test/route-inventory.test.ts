@@ -6,6 +6,7 @@ import { buildHabitRoutes } from '../../services/habit/src/adapters/http/routes.
 import { buildIdentityRoutes } from '../../services/identity/src/adapters/http/routes.js';
 import { buildInsightRoutes } from '../../services/insight/src/adapters/http/routes.js';
 import { buildNotificationRoutes } from '../../services/notification/src/adapters/http/routes.js';
+import { buildRecommendationRoutes } from '../../services/recommendation/src/adapters/http/routes.js';
 
 /*
  * The security surface of the platform, written down and checked: which routes can be called without
@@ -25,6 +26,7 @@ const services: Record<string, Route[]> = {
   challenge: buildChallengeRoutes({ useCases }),
   insight: buildInsightRoutes({ useCases }),
   notification: buildNotificationRoutes({ useCases }),
+  recommendation: buildRecommendationRoutes({ useCases }),
 };
 
 const all = Object.entries(services).flatMap(([service, routes]) =>

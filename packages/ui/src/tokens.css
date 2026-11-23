@@ -4,16 +4,20 @@
  * theme every component by setting them on any ancestor. Changes here go through review.
  */
 :root {
-  --tp-color-bg: #ffffff;
-  --tp-color-surface: #f6f7f9;
+  --tp-color-bg: #f4f6fb;
+  --tp-color-surface: #ffffff;
   --tp-color-text: #1b2330;
   --tp-color-text-muted: #55627a;
   --tp-color-border: #d5dae3;
-  --tp-color-accent: #2257d6;
+  --tp-color-accent: #3451d1;
+  --tp-color-accent-strong: #2a41a8;
+  --tp-color-accent-soft: #e8ecfc;
   --tp-color-accent-contrast: #ffffff;
   --tp-color-positive: #1c7a43;
   --tp-color-negative: #b3261e;
   --tp-color-track: #e3e7ee;
+  --tp-shadow-1: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 8%);
+  --tp-shadow-2: 0 4px 12px rgb(16 24 40 / 10%), 0 2px 4px rgb(16 24 40 / 6%);
   --tp-color-focus: #1a73e8;
 
   --tp-space-1: 0.25rem;
@@ -22,8 +26,8 @@
   --tp-space-4: 1rem;
   --tp-space-6: 1.5rem;
 
-  --tp-radius-1: 0.375rem;
-  --tp-radius-2: 0.75rem;
+  --tp-radius-1: 0.5rem;
+  --tp-radius-2: 0.875rem;
 
   --tp-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --tp-font-size-1: 0.8125rem;
@@ -33,16 +37,20 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --tp-color-bg: #11161f;
-    --tp-color-surface: #1a212d;
+    --tp-color-bg: #0e131c;
+    --tp-color-surface: #171e2b;
     --tp-color-text: #e8ecf3;
     --tp-color-text-muted: #9aa7bd;
     --tp-color-border: #333d4f;
-    --tp-color-accent: #7ea6ff;
+    --tp-color-accent: #8ba7ff;
+    --tp-color-accent-strong: #b3c4ff;
+    --tp-color-accent-soft: #232d4d;
     --tp-color-accent-contrast: #0b1020;
     --tp-color-positive: #5fd08a;
     --tp-color-negative: #ff8a80;
     --tp-color-track: #2b3445;
+    --tp-shadow-1: 0 1px 2px rgb(0 0 0 / 40%);
+    --tp-shadow-2: 0 6px 16px rgb(0 0 0 / 45%);
     --tp-color-focus: #8ab4ff;
   }
 }

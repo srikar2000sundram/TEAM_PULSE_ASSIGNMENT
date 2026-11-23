@@ -18,6 +18,7 @@
 <svelte:head><title>Dashboard · TeamPulse</title></svelte:head>
 
 <h1>Hello, {session.user?.displayName}</h1>
+<p class="muted">Here is how your week is going.</p>
 
 {#if mine.report.error}
   <p class="notice error" role="alert">{mine.report.error}</p>

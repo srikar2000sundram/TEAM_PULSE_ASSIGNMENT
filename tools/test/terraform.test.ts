@@ -8,6 +8,7 @@ import { loadHabitConfig } from '../../services/habit/src/config/index.js';
 import { loadIdentityConfig } from '../../services/identity/src/config/index.js';
 import { loadInsightConfig } from '../../services/insight/src/config/index.js';
 import { loadNotificationConfig } from '../../services/notification/src/config/index.js';
+import { loadRecommendationConfig } from '../../services/recommendation/src/config/index.js';
 import { LAMBDA_QUEUES, SERVICE_QUEUES, TABLES } from '../local/topology.mjs';
 
 /*
@@ -96,6 +97,7 @@ describe('log service names', () => {
       'challenge',
       'insight',
       'notification',
+      'recommendation',
     ]) {
       const main = readFileSync(join(root, 'services', name, 'src', 'main.ts'), 'utf8');
       expect(main, name).toContain(`service: '${name}-service'`);
@@ -173,6 +175,11 @@ describe('what each service is given to start in production', () => {
     [
       'notification',
       () => loadNotificationConfig({ ...common, ...database, ...jwks, ...queue('notification') }),
+    ],
+    [
+      'recommendation',
+      () =>
+        loadRecommendationConfig({ ...common, ...database, ...jwks, ...queue('recommendation') }),
     ],
     [
       'insight',

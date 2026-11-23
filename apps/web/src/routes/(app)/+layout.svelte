@@ -30,6 +30,7 @@
       { href: '/habits', label: 'Habits', show: !session.isAdmin },
       { href: '/challenges', label: 'Challenges', show: true },
       { href: '/analytics/me', label: 'My activity', show: !session.isAdmin },
+      { href: '/recommendations', label: 'Recommendations', show: !session.isAdmin },
       { href: '/analytics/team', label: session.isAdmin ? 'Organisation' : 'Team', show: true },
       { href: '/admin', label: 'Administration', show: session.isAdmin },
     ].filter((link) => link.show),
@@ -45,7 +46,7 @@
   <div class="shell">
     <a class="skip-link" href="#content">Skip to content</a>
     <header>
-      <strong>TeamPulse</strong>
+      <span class="brand">TeamPulse</span>
       <nav aria-label="Main">
         {#each links as link (link.href)}
           <a href={link.href} aria-current={page.url.pathname.startsWith(link.href) ? 'page' : undefined}>{link.label}</a>

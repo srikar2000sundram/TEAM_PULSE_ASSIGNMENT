@@ -43,6 +43,8 @@ export default tseslint.config(
       '**/coverage/**',
       '**/.svelte-kit/**',
       'tools/**',
+      'docs/guides/**',
+      'build/**',
       '*.config.*',
       '**/vite.config.ts',
       'apps/web/build/**',

@@ -1,7 +1,15 @@
 {
   "$comment": "Monitoring as data. Terraform (roadmap step 11) turns this into CloudWatch metric filters, alarms and a dashboard; tools/test/monitoring.test.ts checks every filter against log lines the real code produces. Placeholders: {service} is replaced per service, {queue} per dead-letter queue, {lambda} per function.",
   "namespace": "TeamPulse",
-  "services": ["identity", "habit", "event-tracking", "challenge", "insight", "notification"],
+  "services": [
+    "identity",
+    "habit",
+    "event-tracking",
+    "challenge",
+    "insight",
+    "notification",
+    "recommendation"
+  ],
   "lambdas": ["streak", "badge-streak", "badge-totals"],
   "logMetrics": [
     {

@@ -24,6 +24,7 @@ export default defineConfig({
       '/api/v1/challenge': target(3004),
       '/api/v1/insight': target(3005),
       '/api/v1/notification': target(3006),
+      '/api/v1/recommendation': target(3007),
     },
   },
 });

@@ -16,6 +16,7 @@
     { "path": "services/habit/tsconfig.build.json" },
     { "path": "services/event-tracking/tsconfig.build.json" },
     { "path": "services/notification/tsconfig.build.json" },
+    { "path": "services/recommendation/tsconfig.build.json" },
     { "path": "services/insight/tsconfig.build.json" },
     { "path": "services/challenge/tsconfig.build.json" },
     { "path": "lambdas/streak/tsconfig.build.json" },

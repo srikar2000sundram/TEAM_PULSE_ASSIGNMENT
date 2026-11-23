@@ -14,7 +14,7 @@ flowchart LR
     s8 --> s9["9. Dockerfiles + local stack"]
     s9 --> s10["10. CI pipeline"]
     s10 --> s11["11. Terraform: AWS"]
-    s11 --> s12["12. Observability + hardening"]
+    s11 --> s12["12. Observability + hardening"] --> s13["13. Recommendation<br/>service"]
 ```
 
 | Step | Deliverable                                                                                                                                          | Status                                      |
@@ -31,6 +31,7 @@ flowchart LR
 | 10   | CI: lint, typecheck, test, audit, image scan                                                                                                         | Written, not yet run                        |
 | 11   | Terraform for every AWS resource in the case study (written and text-tested, never validated or applied)                                             | **Written**, not validated                  |
 | 12   | Monitoring definitions and tests, security headers and CSP, rate-limit and client-address fixes, load test, threat-model review                      | **Done** (alarms not yet deployed: step 11) |
+| 13   | Recommendation Service: timing recommendations from a person's own completion times, Recommendations page, accept sets the habit reminder (ADR-0023) | **Done** (not yet deployed)                 |
 
 ## Open questions for you
 
