@@ -97,11 +97,27 @@ prints PASS for each of 17 checks and ends with 'All checks passed'."
 **Say:** "The project also has about 1,400 automated tests, formatting and style checks, strict type
 checking, and every diagram in the documentation is checked."
 
-## Scene 7: Being honest (about 1 minute)
+## Scene 7: The administrator and notifications (about 1 minute)
+
+**Do:** Sign out, then sign in as the administrator from `infra/local/.env` (type the e-mail and password
+off camera, or use a demo administrator you created beforehand). Open **Administration**.
+
+**Say:** "The administrator manages people and teams. I can add a person, disable or enable an
+account, create a team, and add people to it."
+
+**Do:** Add a person with the form, then press **Disable** on them.
+
+**Say:** "Every change shows a message, and the list updates."
+
+**Do:** Sign in as Ada (a badge appears after a few activities) and open the bell, **Notifications**.
+
+**Say:** "When Ada earns a badge, the Notification service tells her. Here it is; I can mark it as read."
+
+## Scene 8: Being honest (about 1 minute)
 
 **Say:** "What is not done yet: I have not deployed to real AWS; I wrote the plan and will build the
-infrastructure code next. The admin screens, a full notifications page and some habit-editing screens
-are still to come. Everything I showed is real, running code."
+infrastructure code next. Editing a habit, reminders and sharing from the screen, and a few admin
+extras such as password reset are still to come. Everything I showed is real, running code."
 
 ## If something goes wrong while recording
 

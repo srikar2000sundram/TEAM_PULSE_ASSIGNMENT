@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { onMount } from 'svelte';
   import { useApp } from '../../lib/context.js';
 
   let { children } = $props();
@@ -14,8 +13,11 @@
     if (session.ready && session.user === null) void goto('/login', { replaceState: true });
   });
 
-  onMount(() => {
-    // A failure here must never break the page: the count is a nicety.
+  // Refresh the bell on every page change, so it never shows a number older than the last page.
+  // A failure here must never break the page: the count is a nicety.
+  $effect(() => {
+    void page.url.pathname;
+    if (session.user === null) return;
     api.notifications.list({ unread: true, limit: 1 }).then(
       (result) => (unread = result.unreadCount),
       () => undefined,
