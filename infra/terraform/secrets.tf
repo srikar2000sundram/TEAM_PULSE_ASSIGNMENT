@@ -2,7 +2,7 @@
 # them when a task starts and injects them as environment variables.
 #
 # The generated values also live in the Terraform state file, which is why the state bucket must be
-# private and encrypted (docs/guides/05-aws-deployment.md).
+# private and encrypted (see the AWS deployment notes).
 
 resource "tls_private_key" "jwt" {
   algorithm = "RSA"

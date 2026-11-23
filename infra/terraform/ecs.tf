@@ -330,7 +330,7 @@ resource "aws_appautoscaling_policy" "cpu" {
 
 # --- One-off task: database migrations and the first administrator ------------------------------
 # Run it by hand after the first apply and after each release that adds migrations
-# (docs/guides/05-aws-deployment.md). It is a task definition only; nothing runs it automatically.
+# (see the AWS deployment notes). It is a task definition only; nothing runs it automatically.
 
 variable "admin_email" {
   description = "Email address of the first administrator. Empty uses alert_email."

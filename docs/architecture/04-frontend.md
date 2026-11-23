@@ -124,7 +124,7 @@ behind CloudFront. There is **no server-side rendering**, which matches the case
 ## Implementation status (roadmap step 8)
 
 Code: [`packages/ui`](../../packages/ui) (components and tokens) and [`apps/web`](../../apps/web)
-(the app). Guides: [local run and testing](../guides/01-run-locally.md).
+(the app).
 
 ```mermaid
 flowchart TB

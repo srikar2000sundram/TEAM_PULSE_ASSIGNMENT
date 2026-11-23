@@ -1,4 +1,4 @@
-# Copy to terraform.tfvars (git-ignored) and fill in. See docs/guides/05-aws-deployment.md.
+# Copy to terraform.tfvars (git-ignored) and fill in. See the AWS deployment notes.
 
 environment = "dev"
 region      = "eu-west-1"

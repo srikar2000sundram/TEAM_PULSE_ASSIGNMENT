@@ -32,3 +32,8 @@ backend.hcl
 
 # ArchitectIQ graph cache
 .architectiq/
+
+
+Case Study 2 - TeamPulse.pdf
+# Personal notes (guides, demo scripts): kept on my computer, not published
+docs/guides/

@@ -21,7 +21,7 @@ terraform {
   }
 
   # State holds the generated database password and signing key, so it must live somewhere private,
-  # encrypted and locked. Create the bucket once (docs/guides/05-aws-deployment.md), then run
+  # encrypted and locked. Create the bucket once (see the AWS deployment notes), then run
   #   terraform init -backend-config=backend.hcl
   # Left empty on purpose: a local state file is fine for a first look, never for a shared team.
   backend "s3" {}

@@ -1,4 +1,4 @@
-# Copy to backend.hcl (git-ignored) after creating the state bucket (docs/guides/05-aws-deployment.md).
+# Copy to backend.hcl (git-ignored) after creating the state bucket (see the AWS deployment notes).
 bucket       = "teampulse-terraform-state-ACCOUNT_ID"
 key          = "teampulse/dev.tfstate"
 region       = "eu-west-1"

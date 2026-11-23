@@ -99,7 +99,7 @@ sequenceDiagram
     You->>AWS: confirm the two alert emails
 ```
 
-The step-by-step version, with every click and command, is the AWS deployment guide (still to be written).
+The step-by-step version, with every click and command, is kept in separate deployment notes (not part of this repository).
 
 ## Open items
 
@@ -111,7 +111,7 @@ The step-by-step version, with every click and command, is the AWS deployment gu
   downloading one public file and pinning its checksum in the Dockerfile.
 - **Image before apply:** the ECS services reference an image tag that must already exist in ECR, but ECR
   is created by the same configuration. Plan on a two-step first apply (`-target` the repository, push,
-  then the full apply); the guide will spell it out.
+  then the full apply).
 - **CloudFront to ALB is plain HTTP.** Needs a domain name and ACM certificate to close.
 - **Cost not measured.** The monthly figure above is an estimate, not a bill.
 - **Alarm thresholds untested** on real traffic (see [16](16-observability-and-hardening.md)).

@@ -5,7 +5,6 @@ code and the same settings as in AWS; only the place changes.
 
 - Files: [`infra/docker`](../../infra/docker) (the images), [`infra/local`](../../infra/local) (the
   stack), [`tools/local`](../../tools/local) (helper scripts)
-- How to use it: [Guide 1](../guides/01-run-locally.md)
 - Decision: [ADR-0019](../adr/0019-local-aws-with-localstack.md)
 
 ## What runs
