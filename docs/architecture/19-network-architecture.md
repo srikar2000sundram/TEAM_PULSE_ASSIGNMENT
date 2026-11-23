@@ -2,7 +2,7 @@
 
 The network the platform runs in on AWS, exactly as described by the Terraform in
 [`infra/terraform`](../../infra/terraform) (`network.tf`, `security_groups.tf`, `alb.tf`, `frontend.tf`,
-`waf.tf`). Region `eu-west-1`, two Availability Zones.
+`waf.tf`). Region `ap-south-1`, two Availability Zones.
 
 ## The picture
 
@@ -19,20 +19,20 @@ flowchart TB
     user -->|"HTTPS 443"| waf --> cf
     cf -->|"everything except /api/*"| s3
 
-    subgraph vpc["VPC 10.0.0.0/16, eu-west-1"]
+    subgraph vpc["VPC 10.0.0.0/16, ap-south-1"]
         igw["Internet gateway"]
 
-        subgraph pub["Public subnets: 10.0.0.0/24 (zone a), 10.0.1.0/24 (zone b)"]
-            alb["Application Load Balancer<br/>security group: HTTP 80 from CloudFront only<br/>rule needs header X-Origin-Verify"]
+        subgraph pub["Public subnets"]
+            alb["Application Load Balancer<br/>subnets 10.0.0.0/24 and 10.0.1.0/24<br/>security group: HTTP 80 from CloudFront only<br/>rule needs header X-Origin-Verify"]
             nat["NAT gateway<br/>(outbound only)"]
         end
 
-        subgraph app["App subnets: 10.0.10.0/24 (a), 10.0.11.0/24 (b)"]
-            ecs["ECS Fargate tasks, port 3000<br/>identity, habit, event-tracking, challenge,<br/>insight, notification, recommendation<br/>security group: 3000 from the load balancer only"]
+        subgraph app["App subnets"]
+            ecs["ECS Fargate tasks, port 3000<br/>subnets 10.0.10.0/24 and 10.0.11.0/24<br/>identity, habit, event-tracking, challenge,<br/>insight, notification, recommendation<br/>security group: 3000 from the load balancer only"]
         end
 
-        subgraph data["Data subnets: 10.0.20.0/24 (a), 10.0.21.0/24 (b)<br/>no route to the internet, network ACL: 5432 from app subnets only"]
-            rds[("RDS PostgreSQL 16<br/>security group: 5432 from the tasks only<br/>encrypted, TLS required")]
+        subgraph data["Data subnets"]
+            rds[("RDS PostgreSQL 16<br/>subnets 10.0.20.0/24 and 10.0.21.0/24<br/>no route to the internet<br/>network ACL: 5432 from the app subnets only<br/>security group: 5432 from the tasks only<br/>encrypted, TLS required")]
         end
 
         vpce["Gateway endpoints<br/>S3 and DynamoDB"]

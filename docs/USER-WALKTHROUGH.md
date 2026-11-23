@@ -80,7 +80,7 @@ _Behind the scenes:_ the Insight Service keeps personal counters per person; fil
 week of history for Ada. Normally a pattern builds up over several days of use.)
 
 _Expect:_ a card per habit with a clear pattern, for example _Walk after lunch: Best time **13:00**
-(Europe/Berlin). Strong pattern, 6 of your last 6 were around this time_, with **Accept** and
+(Asia/Kolkata). Strong pattern, 6 of your last 6 were around this time_, with **Accept** and
 **Dismiss**. A habit with fewer than 5 completions, or no clear hour, shows nothing, and the page says so.
 _Behind the scenes:_ the Recommendation Service stored the time of each completion from the
 `ActivityCompleted` events and counts completions per local hour in the browser's time zone.

@@ -1,6 +1,6 @@
 # Copy to backend.hcl (git-ignored) after creating the state bucket (see the AWS deployment notes).
 bucket       = "teampulse-terraform-state-ACCOUNT_ID"
 key          = "teampulse/dev.tfstate"
-region       = "eu-west-1"
+region       = "ap-south-1"
 encrypt      = true
 use_lockfile = true

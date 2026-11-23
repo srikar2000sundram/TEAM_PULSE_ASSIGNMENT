@@ -1,7 +1,7 @@
 variable "region" {
   description = "AWS region for everything except the CloudFront certificate and WAF (those are global)."
   type        = string
-  default     = "eu-west-1"
+  default     = "ap-south-1"
 }
 
 variable "environment" {
