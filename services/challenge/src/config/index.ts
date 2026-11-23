@@ -5,6 +5,7 @@ import {
   loadServiceConfig,
   publisherConfigShape,
   requireEventing,
+  trustedProxies,
   z,
 } from '@teampulse/config';
 
@@ -28,7 +29,7 @@ export const challengeConfigSchema = baseConfigSchema
     CHALLENGE_GRACE_DAYS: z.coerce.number().int().min(0).max(7).default(1),
 
     CORS_ORIGINS: csv.default([]),
-    TRUST_PROXY: z.stringbool().default(false),
+    TRUST_PROXY: trustedProxies,
 
     ...publisherConfigShape,
     ...consumerConfigShape,

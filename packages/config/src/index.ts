@@ -70,6 +70,24 @@ export function loadServiceConfig<Schema extends typeof baseConfigSchema>(
   return config;
 }
 
+/**
+ * How many proxies stand in front of the service: `false` (none, the default), `true` (one) or a
+ * number from 1 to 3. Behind CloudFront and a load balancer the value is 2. Too high lets a client
+ * choose its own address; too low makes everyone look like the proxy, so use the real count.
+ */
+export const trustedProxies = z
+  .string()
+  .default('false')
+  .transform((value, context): false | number => {
+    const text = value.trim().toLowerCase();
+    if (text === 'false' || text === '0' || text === '') return false;
+    if (text === 'true') return 1;
+    const hops = Number(text);
+    if (Number.isInteger(hops) && hops >= 1 && hops <= 3) return hops;
+    context.addIssue({ code: 'custom', message: 'must be true, false or a number from 1 to 3' });
+    return z.NEVER;
+  });
+
 /** Comma-separated list, for example `A,B,C`. Empty entries are dropped. */
 export const csv = z.string().transform((value) =>
   value

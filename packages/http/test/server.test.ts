@@ -119,7 +119,7 @@ async function setup(
   options: {
     readiness?: Record<string, () => Promise<void>>;
     corsOrigins?: string[];
-    trustProxy?: boolean;
+    trustProxy?: boolean | number;
     classifyError?: (error: unknown) => AppError | undefined;
   } = {},
 ) {
@@ -443,7 +443,10 @@ describe('security headers and CORS', () => {
 });
 
 describe('client address behind a proxy', () => {
-  const seen = async (trustProxy: boolean | undefined) => {
+  const seen = async (
+    trustProxy: boolean | number | undefined,
+    forwarded = '6.6.6.6, 203.0.113.7',
+  ) => {
     const { app } = await setup(trustProxy === undefined ? {} : { trustProxy });
     const ips: string[] = [];
     app.addHook('onRequest', (request, _reply, done) => {
@@ -454,13 +457,21 @@ describe('client address behind a proxy', () => {
       method: 'GET',
       url: '/api/v1/test/public',
       remoteAddress: '10.0.0.9',
-      headers: { 'x-forwarded-for': '6.6.6.6, 203.0.113.7' },
+      headers: { 'x-forwarded-for': forwarded },
     });
     return ips[0];
   };
 
   it('uses the address the trusted proxy appended, not one the client claimed', async () => {
     expect(await seen(true)).toBe('203.0.113.7');
+  });
+
+  it('trusts exactly two proxies behind CloudFront and a load balancer', async () => {
+    // client-claimed, real client (added by CloudFront), CloudFront (added by the load balancer)
+    const header = '6.6.6.6, 203.0.113.7, 198.51.100.5';
+    expect(await seen(2, header)).toBe('203.0.113.7');
+    expect(await seen(1, header)).toBe('198.51.100.5');
+    expect(await seen(0, header)).toBe('10.0.0.9');
   });
 
   it('ignores forwarded headers when no proxy is trusted', async () => {

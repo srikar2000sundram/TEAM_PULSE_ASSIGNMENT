@@ -5,6 +5,7 @@ import {
   loadServiceConfig,
   publisherConfigShape,
   requireEventing,
+  trustedProxies,
   z,
 } from '@teampulse/config';
 
@@ -25,7 +26,7 @@ export const habitConfigSchema = baseConfigSchema
     MAX_ACTIVE_HABITS_PER_USER: z.coerce.number().int().min(1).max(500).default(50),
 
     CORS_ORIGINS: csv.default([]),
-    TRUST_PROXY: z.stringbool().default(false),
+    TRUST_PROXY: trustedProxies,
 
     ...publisherConfigShape,
     ...consumerConfigShape,

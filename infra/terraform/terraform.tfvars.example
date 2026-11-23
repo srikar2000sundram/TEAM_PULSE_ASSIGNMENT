@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars (git-ignored) and fill in. See docs/guides/05-aws-deployment.md.
+
+environment = "dev"
+region      = "eu-west-1"
+
+# Where alarm emails go. AWS sends a confirmation link to this address; click it.
+alert_email = "you@example.com"
+
+# The first administrator's email (defaults to alert_email).
+# admin_email = "admin@example.com"
+
+# The tag you pushed the backend image with, normally the git commit SHA.
+image_tag = "replace-me"

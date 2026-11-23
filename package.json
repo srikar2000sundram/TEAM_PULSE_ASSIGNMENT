@@ -34,7 +34,8 @@
     "load": "node tools/load/load-test.mjs",
     "load:burst": "node tools/load/load-test.mjs --burst",
     "test:unit": "vitest run --project unit",
-    "test:integration": "vitest run --project integration"
+    "test:integration": "vitest run --project integration",
+    "bundle:lambdas": "node tools/lambda/bundle.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -44,6 +45,7 @@
     "jsdom": "^25.0.1",
     "mermaid": "^11.4.0",
     "prettier": "^3.3.3",
+    "rolldown": "^1.2.19",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.73.0",
     "vitest": "^5.1.1"

@@ -4,6 +4,7 @@ import {
   csv,
   loadServiceConfig,
   requireEventing,
+  trustedProxies,
   z,
 } from '@teampulse/config';
 import { DEFAULT_MIN_COHORT_SIZE, MIN_ALLOWED_COHORT_SIZE } from '@teampulse/privacy';
@@ -44,7 +45,7 @@ export const insightConfigSchema = baseConfigSchema
     ...consumerConfigShape,
 
     CORS_ORIGINS: csv.default([]),
-    TRUST_PROXY: z.stringbool().default(false),
+    TRUST_PROXY: trustedProxies,
   })
   .superRefine((config, context) => {
     // This service publishes no events, so it needs no event bus, only its queue.

@@ -4,6 +4,7 @@ import {
   loadServiceConfig,
   publisherConfigShape,
   requireEventing,
+  trustedProxies,
   z,
 } from '@teampulse/config';
 
@@ -59,7 +60,7 @@ export const identityConfigSchema = baseConfigSchema
 
     COOKIE_SECURE: z.stringbool().default(true),
     CORS_ORIGINS: csv.default([]),
-    TRUST_PROXY: z.stringbool().default(false),
+    TRUST_PROXY: trustedProxies,
 
     ...publisherConfigShape,
   })

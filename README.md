@@ -31,6 +31,7 @@ Based on `Case Study 2 - TeamPulse.pdf` (microservices, SvelteKit with runes, AW
 | [14 Local stack](docs/architecture/14-local-stack.md)                                 | Containers, LocalStack, one command              |
 | [15 Continuous integration](docs/architecture/15-ci-cd.md)                            | Checks run on every change                       |
 | [16 Observability and hardening](docs/architecture/16-observability-and-hardening.md) | Alarms, headers, rate limits, threat review      |
+| [17 Terraform](docs/architecture/17-terraform.md)                                     | The AWS infrastructure as code (not yet applied) |
 | [Guide: run it locally and test it](docs/guides/01-run-locally.md)                    | Step by step for beginners                       |
 | [Guide: the demo video script](docs/guides/02-demo-video-script.md)                   | What to say and click, in order                  |
 | [Decision records](docs/adr/README.md)                                                | Why each major choice was made                   |

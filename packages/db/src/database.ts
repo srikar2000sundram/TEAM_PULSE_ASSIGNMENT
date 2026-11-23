@@ -62,7 +62,9 @@ export class PgDatabase implements Database {
     const config: PoolConfig = {
       connectionString: options.connectionString,
       max: options.maxConnections,
-      // RDS requires TLS. Certificate verification stays on: the RDS CA bundle ships in the image.
+      // RDS requires TLS. Certificate verification stays on, so the process must trust the RDS CA
+      // (NODE_EXTRA_CA_CERTS pointing at the bundle). The image does not contain it yet: see
+      // docs/architecture/17-terraform.md, open items.
       ssl: options.ssl ? { rejectUnauthorized: true } : false,
       connectionTimeoutMillis: 5_000,
       idleTimeoutMillis: 30_000,

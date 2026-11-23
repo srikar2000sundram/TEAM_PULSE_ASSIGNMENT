@@ -29,7 +29,7 @@ flowchart LR
 | 8    | `packages/ui` web components and the SvelteKit app (runes): login, dashboard, habits, challenges, analytics. Admin page and notifications page added | **Done** (partly: see 04)                   |
 | 9    | Dockerfile, compose stack and LocalStack (Docker or Podman), smoke test through the real event bus, queues, DynamoDB and Lambdas                     | **Done**                                    |
 | 10   | CI: lint, typecheck, test, audit, image scan                                                                                                         | Written, not yet run                        |
-| 11   | Terraform for every AWS resource in the case study                                                                                                   | Planned                                     |
+| 11   | Terraform for every AWS resource in the case study (written and text-tested, never validated or applied)                                             | **Written**, not validated                  |
 | 12   | Monitoring definitions and tests, security headers and CSP, rate-limit and client-address fixes, load test, threat-model review                      | **Done** (alarms not yet deployed: step 11) |
 
 ## Open questions for you

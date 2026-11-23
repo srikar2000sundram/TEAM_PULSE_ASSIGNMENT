@@ -5,6 +5,7 @@ import {
   loadServiceConfig,
   publisherConfigShape,
   requireEventing,
+  trustedProxies,
   z,
 } from '@teampulse/config';
 
@@ -26,7 +27,7 @@ export const eventTrackingConfigSchema = baseConfigSchema
     BACKFILL_DAYS: z.coerce.number().int().min(0).max(30).default(7),
 
     CORS_ORIGINS: csv.default([]),
-    TRUST_PROXY: z.stringbool().default(false),
+    TRUST_PROXY: trustedProxies,
 
     ...publisherConfigShape,
     ...consumerConfigShape,

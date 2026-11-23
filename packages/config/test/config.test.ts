@@ -5,8 +5,26 @@ import {
   csv,
   loadConfig,
   loadServiceConfig,
+  trustedProxies,
   z,
 } from '../src/index.js';
+
+describe('trustedProxies', () => {
+  const parse = (value?: string) => trustedProxies.safeParse(value);
+  it('is off by default and for false or 0', () => {
+    expect(parse(undefined).data).toBe(false);
+    expect(parse('false').data).toBe(false);
+    expect(parse('0').data).toBe(false);
+  });
+  it('treats true as one proxy and accepts a count from 1 to 3', () => {
+    expect(parse('true').data).toBe(1);
+    expect(parse('2').data).toBe(2);
+    expect(parse('3').data).toBe(3);
+  });
+  it('rejects anything else, so a typo cannot widen trust', () => {
+    for (const bad of ['4', '-1', '1.5', 'yes', 'all']) expect(parse(bad).success, bad).toBe(false);
+  });
+});
 
 describe('loadConfig', () => {
   it('applies defaults and coerces numbers', () => {

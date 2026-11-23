@@ -30,7 +30,7 @@ export interface ServerOptions {
    * is used, and anything a client put earlier in `X-Forwarded-For` is ignored, so a client cannot
    * pick its own IP address to dodge a rate limit.
    */
-  readonly trustProxy?: boolean;
+  readonly trustProxy?: boolean | number;
   readonly bodyLimitBytes?: number;
   /** Named dependency checks for `/readyz`. Each must reject when its dependency is unusable. */
   readonly readiness?: Readonly<Record<string, () => Promise<void>>>;
@@ -60,6 +60,8 @@ const CLIENT_ERROR_DETAIL: Readonly<Record<number, readonly [string, string]>> =
 };
 
 export async function createServer(options: ServerOptions): Promise<FastifyInstance> {
+  // true means one proxy; a number is the exact count (CloudFront plus a load balancer is 2).
+  const hops = options.trustProxy === true ? 1 : Number(options.trustProxy || 0);
   const ids = options.idGenerator ?? new UuidGenerator();
   const { logger } = options;
 
@@ -69,7 +71,7 @@ export async function createServer(options: ServerOptions): Promise<FastifyInsta
     // object (which could carry headers or tokens) into the log.
     logController: new LogController({ disableRequestLogging: true }),
     // Trust only the directly connected proxy (hop 0); see the option's comment.
-    trustProxy: options.trustProxy === true ? (_address: string, hop: number) => hop < 1 : false,
+    trustProxy: hops > 0 ? (_address: string, hop: number) => hop < hops : false,
     bodyLimit: options.bodyLimitBytes ?? 100 * 1024,
     // The request id IS the correlation id: honour a valid incoming UUID, otherwise create one.
     genReqId: (request) => {
