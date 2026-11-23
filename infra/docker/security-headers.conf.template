@@ -1,0 +1,20 @@
+# Security headers for everything the web container serves itself. Included in every location that
+# sets headers of its own (nginx drops inherited add_header lines in a location that has any).
+#
+# The script-hash placeholder in script-src below is replaced at image build time by
+# tools/docker/render-security-headers.mjs with the SHA-256 hash of each inline script in the built
+# index.html, so exactly the bootstrap script SvelteKit generated may run and no other inline script.
+#
+# Styles may be inline ('unsafe-inline' in style-src) because the web components keep their CSS inside
+# the JavaScript and inject it as <style> elements into their shadow roots; a browser check showed a
+# stricter style-src leaves them unstyled. Scripts are the part that matters most and stay locked to
+# the one hashed bootstrap script: injected CSS can restyle a page but cannot run code.
+#
+# HSTS is not set here: this container speaks plain http behind the load balancer or CloudFront,
+# which is where Strict-Transport-Security belongs (see the AWS deployment architecture).
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' __SCRIPT_HASHES__; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "DENY" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()" always;
+add_header Cross-Origin-Opener-Policy "same-origin" always;

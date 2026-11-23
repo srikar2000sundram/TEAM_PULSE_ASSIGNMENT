@@ -119,6 +119,7 @@ async function setup(
   options: {
     readiness?: Record<string, () => Promise<void>>;
     corsOrigins?: string[];
+    trustProxy?: boolean;
     classifyError?: (error: unknown) => AppError | undefined;
   } = {},
 ) {
@@ -438,6 +439,33 @@ describe('security headers and CORS', () => {
       headers: { origin: 'https://app.teampulse.internal' },
     });
     expect(response.headers['access-control-allow-origin']).toBeUndefined();
+  });
+});
+
+describe('client address behind a proxy', () => {
+  const seen = async (trustProxy: boolean | undefined) => {
+    const { app } = await setup(trustProxy === undefined ? {} : { trustProxy });
+    const ips: string[] = [];
+    app.addHook('onRequest', (request, _reply, done) => {
+      ips.push(request.ip);
+      done();
+    });
+    await app.inject({
+      method: 'GET',
+      url: '/api/v1/test/public',
+      remoteAddress: '10.0.0.9',
+      headers: { 'x-forwarded-for': '6.6.6.6, 203.0.113.7' },
+    });
+    return ips[0];
+  };
+
+  it('uses the address the trusted proxy appended, not one the client claimed', async () => {
+    expect(await seen(true)).toBe('203.0.113.7');
+  });
+
+  it('ignores forwarded headers when no proxy is trusted', async () => {
+    expect(await seen(undefined)).toBe('10.0.0.9');
+    expect(await seen(false)).toBe('10.0.0.9');
   });
 });
 

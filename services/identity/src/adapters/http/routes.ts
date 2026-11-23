@@ -176,6 +176,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'End the current session',
       tags: ['auth'],
       auth: 'public',
+      rateLimit: { max: 30, timeWindowMs: 60_000 },
       success: { status: 204 },
       handler: async ({ request, reply }) => {
         const client = requireWebClient(request);
@@ -237,6 +238,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Create a user (admin)',
       tags: ['users'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       body: createUserRequestSchema,
       success: { status: 201, schema: userResponseSchema },
       handler: async ({ principal, body }) => {
@@ -269,6 +271,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Change a user role and/or status, for example to disable an account (admin)',
       tags: ['users'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       params: userIdParam,
       body: updateUserRequestSchema,
       success: { status: 200, schema: userResponseSchema },
@@ -288,6 +291,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Delete a user and all their data (admin)',
       tags: ['users'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       params: userIdParam,
       success: { status: 204 },
       handler: ({ principal, params }) =>
@@ -301,6 +305,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Create a team (admin)',
       tags: ['teams'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       body: createTeamRequestSchema,
       success: { status: 201, schema: teamResponseSchema },
       handler: async ({ principal, body }) => {
@@ -347,6 +352,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Add a member to a team (admin)',
       tags: ['teams'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       params: teamIdParam,
       body: addTeamMemberRequestSchema,
       success: { status: 204 },
@@ -364,6 +370,7 @@ export function buildIdentityRoutes(options: IdentityRouteOptions): Route[] {
       summary: 'Remove a member from a team (admin)',
       tags: ['teams'],
       auth: 'required',
+      rateLimit: { max: 60, timeWindowMs: 60_000 },
       params: z.strictObject({ teamId: idSchema, userId: idSchema }),
       success: { status: 204 },
       handler: ({ principal, params }) =>

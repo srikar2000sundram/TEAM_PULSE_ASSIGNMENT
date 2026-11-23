@@ -31,6 +31,8 @@
     "local:down": "node tools/local/compose.mjs down",
     "local:reset": "node tools/local/compose.mjs reset",
     "local:smoke": "node tools/local/smoke.mjs",
+    "load": "node tools/load/load-test.mjs",
+    "load:burst": "node tools/load/load-test.mjs --burst",
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration"
   },

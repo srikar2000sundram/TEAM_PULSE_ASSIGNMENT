@@ -1,0 +1,535 @@
+{
+  "$comment": "Monitoring as data. Terraform (roadmap step 11) turns this into CloudWatch metric filters, alarms and a dashboard; tools/test/monitoring.test.ts checks every filter against log lines the real code produces. Placeholders: {service} is replaced per service, {queue} per dead-letter queue, {lambda} per function.",
+  "namespace": "TeamPulse",
+  "services": ["identity", "habit", "event-tracking", "challenge", "insight", "notification"],
+  "lambdas": ["streak", "badge-streak", "badge-totals"],
+  "logMetrics": [
+    {
+      "name": "Requests",
+      "unit": "Count",
+      "pattern": "{ $.msg = \"request completed\" }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "ServerErrors",
+      "unit": "Count",
+      "pattern": "{ $.msg = \"request completed\" && $.status >= 500 }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "Unauthorized",
+      "unit": "Count",
+      "pattern": "{ $.msg = \"request completed\" && $.status = 401 }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "Forbidden",
+      "unit": "Count",
+      "pattern": "{ $.msg = \"request completed\" && $.status = 403 }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "RateLimited",
+      "unit": "Count",
+      "pattern": "{ $.msg = \"request completed\" && $.status = 429 }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "Latency",
+      "unit": "Milliseconds",
+      "pattern": "{ $.msg = \"request completed\" }",
+      "value": "$.durationMs",
+      "appliesTo": "services"
+    },
+    {
+      "name": "EventHandlerFailures",
+      "unit": "Count",
+      "pattern": "{ $.event = \"consumer.handler_failed\" }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "InvalidMessages",
+      "unit": "Count",
+      "pattern": "{ $.event = \"consumer.invalid_message\" || $.event = \"outbox.invalid\" }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "OutboxPublishFailures",
+      "unit": "Count",
+      "pattern": "{ $.event = \"outbox.publish_failed\" || $.event = \"outbox.relay_error\" }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "SchedulerFailures",
+      "unit": "Count",
+      "pattern": "{ $.event = \"challenge.tick_failed\" || $.event = \"reminder.tick_failed\" }",
+      "value": "1",
+      "appliesTo": "services"
+    },
+    {
+      "name": "LoginFailures",
+      "unit": "Count",
+      "pattern": "{ $.event = \"auth.login.failed\" }",
+      "value": "1",
+      "appliesTo": ["identity"]
+    },
+    {
+      "name": "RefreshTokenReuse",
+      "unit": "Count",
+      "pattern": "{ $.event = \"auth.refresh.reuse_detected\" }",
+      "value": "1",
+      "appliesTo": ["identity"]
+    },
+    {
+      "name": "InvalidLambdaEvents",
+      "unit": "Count",
+      "pattern": "{ $.event = \"streak.invalid_event\" || $.event = \"badge.invalid_event\" }",
+      "value": "1",
+      "appliesTo": "lambdas"
+    }
+  ],
+  "alarms": [
+    {
+      "id": "service-5xx-rate",
+      "severity": "page",
+      "title": "{service}: more than 5% of requests fail with a server error",
+      "type": "ratio",
+      "numerator": "ServerErrors",
+      "denominator": "Requests",
+      "dimensions": { "Service": "{service}" },
+      "period": 60,
+      "evaluationPeriods": 5,
+      "datapointsToAlarm": 3,
+      "threshold": 5,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Open the service's log group and filter on status >= 500; follow the correlationId into the other services."
+    },
+    {
+      "id": "service-latency-p95",
+      "severity": "ticket",
+      "title": "{service}: slow responses (95th percentile above 1 second)",
+      "type": "metric",
+      "metric": "Latency",
+      "statistic": "p95",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 1000,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Check database CPU and connections, then the slowest routes in the logs."
+    },
+    {
+      "id": "service-event-handler-failures",
+      "severity": "page",
+      "title": "{service}: event handlers keep failing",
+      "type": "metric",
+      "metric": "EventHandlerFailures",
+      "statistic": "Sum",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 2,
+      "datapointsToAlarm": 2,
+      "threshold": 5,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Find consumer.handler_failed in the logs. Failed messages are retried and then land in the dead-letter queue."
+    },
+    {
+      "id": "service-outbox-publish-failures",
+      "severity": "page",
+      "title": "{service}: events are not reaching the event bus",
+      "type": "metric",
+      "metric": "OutboxPublishFailures",
+      "statistic": "Sum",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 2,
+      "datapointsToAlarm": 2,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Check EventBridge availability and the task role's events:PutEvents permission. Events wait safely in the outbox table and are sent when it recovers."
+    },
+    {
+      "id": "service-scheduler-failures",
+      "severity": "ticket",
+      "title": "{service}: a background scheduler keeps failing",
+      "type": "metric",
+      "metric": "SchedulerFailures",
+      "statistic": "Sum",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Find tick_failed in the logs; the scheduler retries on its next tick."
+    },
+    {
+      "id": "dead-letter-queue-not-empty",
+      "severity": "page",
+      "title": "{queue}: messages are stuck in the dead-letter queue",
+      "type": "aws",
+      "namespace": "AWS/SQS",
+      "metric": "ApproximateNumberOfMessagesVisible",
+      "statistic": "Maximum",
+      "dimensions": { "QueueName": "{queue}" },
+      "period": 60,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "deadLetterQueues",
+      "action": "Read a message to see which event failed, fix the cause, then redrive the messages to the source queue."
+    },
+    {
+      "id": "lambda-errors",
+      "severity": "page",
+      "title": "{lambda} function is failing",
+      "type": "aws",
+      "namespace": "AWS/Lambda",
+      "metric": "Errors",
+      "statistic": "Sum",
+      "dimensions": { "FunctionName": "{lambda}" },
+      "period": 300,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "lambdas",
+      "action": "Open the function's log group; failed invocations are retried and then sent to its dead-letter queue."
+    },
+    {
+      "id": "lambda-throttles",
+      "severity": "ticket",
+      "title": "{lambda} function is being throttled",
+      "type": "aws",
+      "namespace": "AWS/Lambda",
+      "metric": "Throttles",
+      "statistic": "Sum",
+      "dimensions": { "FunctionName": "{lambda}" },
+      "period": 300,
+      "evaluationPeriods": 2,
+      "datapointsToAlarm": 2,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "lambdas",
+      "action": "Raise the account or function concurrency limit, or lower the event rate."
+    },
+    {
+      "id": "alb-5xx",
+      "severity": "page",
+      "title": "Load balancer: targets are returning server errors",
+      "type": "aws",
+      "namespace": "AWS/ApplicationELB",
+      "metric": "HTTPCode_Target_5XX_Count",
+      "statistic": "Sum",
+      "dimensions": { "LoadBalancer": "{loadBalancer}" },
+      "period": 60,
+      "evaluationPeriods": 5,
+      "datapointsToAlarm": 3,
+      "threshold": 10,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "none",
+      "action": "See the per-service 5xx alarms to find which service."
+    },
+    {
+      "id": "alb-unhealthy-targets",
+      "severity": "page",
+      "title": "Load balancer: a target group has no healthy task",
+      "type": "aws",
+      "namespace": "AWS/ApplicationELB",
+      "metric": "UnHealthyHostCount",
+      "statistic": "Maximum",
+      "dimensions": { "LoadBalancer": "{loadBalancer}" },
+      "period": 60,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "none",
+      "action": "Check the task's /healthz and /readyz and the ECS service events."
+    },
+    {
+      "id": "ecs-cpu-high",
+      "severity": "ticket",
+      "title": "{service}: CPU above 80%",
+      "type": "aws",
+      "namespace": "AWS/ECS",
+      "metric": "CPUUtilization",
+      "statistic": "Average",
+      "dimensions": { "ClusterName": "{cluster}", "ServiceName": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 80,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Autoscaling should add tasks; if it does not, check the scaling policy and the maximum task count."
+    },
+    {
+      "id": "ecs-memory-high",
+      "severity": "ticket",
+      "title": "{service}: memory above 80%",
+      "type": "aws",
+      "namespace": "AWS/ECS",
+      "metric": "MemoryUtilization",
+      "statistic": "Average",
+      "dimensions": { "ClusterName": "{cluster}", "ServiceName": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 80,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Look for a memory leak; raise the task memory if the load is real."
+    },
+    {
+      "id": "rds-cpu-high",
+      "severity": "ticket",
+      "title": "Database: CPU above 80%",
+      "type": "aws",
+      "namespace": "AWS/RDS",
+      "metric": "CPUUtilization",
+      "statistic": "Average",
+      "dimensions": { "DBInstanceIdentifier": "{database}" },
+      "period": 300,
+      "evaluationPeriods": 3,
+      "datapointsToAlarm": 3,
+      "threshold": 80,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "none",
+      "action": "Find the slow queries with Performance Insights; add an index or scale the instance."
+    },
+    {
+      "id": "rds-storage-low",
+      "severity": "page",
+      "title": "Database: less than 5 GiB of free storage",
+      "type": "aws",
+      "namespace": "AWS/RDS",
+      "metric": "FreeStorageSpace",
+      "statistic": "Minimum",
+      "dimensions": { "DBInstanceIdentifier": "{database}" },
+      "period": 300,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 5368709120,
+      "comparison": "LessThanThreshold",
+      "treatMissingData": "breaching",
+      "expand": "none",
+      "action": "Increase the allocated storage before the database stops accepting writes."
+    },
+    {
+      "id": "dynamodb-throttling",
+      "severity": "ticket",
+      "title": "{table}: DynamoDB is throttling requests",
+      "type": "aws",
+      "namespace": "AWS/DynamoDB",
+      "metric": "ThrottledRequests",
+      "statistic": "Sum",
+      "dimensions": { "TableName": "{table}" },
+      "period": 300,
+      "evaluationPeriods": 2,
+      "datapointsToAlarm": 2,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "tables",
+      "action": "Check the table's capacity mode and look for a hot partition key."
+    },
+    {
+      "id": "security-login-failures",
+      "severity": "ticket",
+      "title": "Many failed sign-ins (possible password guessing)",
+      "type": "metric",
+      "metric": "LoginFailures",
+      "statistic": "Sum",
+      "dimensions": { "Service": "identity" },
+      "period": 300,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 50,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "none",
+      "action": "Look at the source addresses in the identity logs; consider a WAF block rule for them."
+    },
+    {
+      "id": "security-refresh-token-reuse",
+      "severity": "page",
+      "title": "A refresh token was used twice (possible session theft)",
+      "type": "metric",
+      "metric": "RefreshTokenReuse",
+      "statistic": "Sum",
+      "dimensions": { "Service": "identity" },
+      "period": 300,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 0,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "none",
+      "action": "The whole token family is already revoked. Contact the affected person and check for a leaked device or token."
+    },
+    {
+      "id": "security-forbidden-spike",
+      "severity": "ticket",
+      "title": "{service}: many forbidden requests (possible probing)",
+      "type": "metric",
+      "metric": "Forbidden",
+      "statistic": "Sum",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 1,
+      "datapointsToAlarm": 1,
+      "threshold": 100,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Find which user ids and routes are being tried in the logs."
+    },
+    {
+      "id": "security-rate-limited-spike",
+      "severity": "ticket",
+      "title": "{service}: many requests are being rate limited",
+      "type": "metric",
+      "metric": "RateLimited",
+      "statistic": "Sum",
+      "dimensions": { "Service": "{service}" },
+      "period": 300,
+      "evaluationPeriods": 2,
+      "datapointsToAlarm": 2,
+      "threshold": 100,
+      "comparison": "GreaterThanThreshold",
+      "treatMissingData": "notBreaching",
+      "expand": "services",
+      "action": "Either a client is misbehaving or a limit is too low for real use; check which route."
+    }
+  ],
+  "dashboard": {
+    "title": "TeamPulse",
+    "rows": [
+      {
+        "title": "Traffic and errors",
+        "widgets": [
+          {
+            "title": "Requests per service",
+            "metric": "Requests",
+            "statistic": "Sum",
+            "per": "service"
+          },
+          {
+            "title": "Server errors per service",
+            "metric": "ServerErrors",
+            "statistic": "Sum",
+            "per": "service"
+          },
+          {
+            "title": "Latency p95 per service (ms)",
+            "metric": "Latency",
+            "statistic": "p95",
+            "per": "service"
+          }
+        ]
+      },
+      {
+        "title": "Events",
+        "widgets": [
+          {
+            "title": "Event handler failures",
+            "metric": "EventHandlerFailures",
+            "statistic": "Sum",
+            "per": "service"
+          },
+          {
+            "title": "Outbox publish failures",
+            "metric": "OutboxPublishFailures",
+            "statistic": "Sum",
+            "per": "service"
+          },
+          {
+            "title": "Dead-letter queue depth",
+            "metric": "ApproximateNumberOfMessagesVisible",
+            "namespace": "AWS/SQS",
+            "statistic": "Maximum",
+            "per": "deadLetterQueue"
+          }
+        ]
+      },
+      {
+        "title": "Security",
+        "widgets": [
+          {
+            "title": "Failed sign-ins",
+            "metric": "LoginFailures",
+            "statistic": "Sum",
+            "per": "identity"
+          },
+          {
+            "title": "Refresh token reuse",
+            "metric": "RefreshTokenReuse",
+            "statistic": "Sum",
+            "per": "identity"
+          },
+          {
+            "title": "Unauthorized, forbidden and rate-limited",
+            "metric": "Unauthorized",
+            "statistic": "Sum",
+            "per": "service"
+          }
+        ]
+      },
+      {
+        "title": "Platform",
+        "widgets": [
+          {
+            "title": "ECS CPU per service",
+            "metric": "CPUUtilization",
+            "namespace": "AWS/ECS",
+            "statistic": "Average",
+            "per": "service"
+          },
+          {
+            "title": "Lambda errors",
+            "metric": "Errors",
+            "namespace": "AWS/Lambda",
+            "statistic": "Sum",
+            "per": "lambda"
+          },
+          {
+            "title": "Database CPU",
+            "metric": "CPUUtilization",
+            "namespace": "AWS/RDS",
+            "statistic": "Average",
+            "per": "database"
+          }
+        ]
+      }
+    ]
+  }
+}

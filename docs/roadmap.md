@@ -17,20 +17,20 @@ flowchart LR
     s11 --> s12["12. Observability + hardening"]
 ```
 
-| Step | Deliverable                                                                                                                                          | Status                    |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| 1    | Repo scaffold, tooling, architecture docs, Mermaid diagrams, ADRs                                                                                    | **Done**                  |
-| 2    | Shared packages: kernel, contracts (13 events), observability, config; ESLint boundary rules; Vitest                                                 | **Done**                  |
-| 3    | Identity Service: Argon2id login, RS256 JWT + JWKS, rotating refresh tokens, roles, teams, audit log, outbox, tests                                  | **Done**                  |
-| 4    | Habit Service: CRUD, private vs team visibility, reminders, outbox, shared db/outbox/testing packages, tests                                         | **Done**                  |
-| 5    | Event Tracking: record activity, idempotency, outbox relay to EventBridge, SQS event consumer, Habit handlers wired                                  | **Done**                  |
-| 6    | Streak Lambda (DynamoDB, conditional writes) and badge Lambda (streak and total milestones)                                                          | **Done**                  |
-| 7    | Notification, Insight (K-anonymity, pseudonymous aggregates, erasure) and Challenge (scoring ledger, leaderboard, badges) services                   | **Done**                  |
-| 8    | `packages/ui` web components and the SvelteKit app (runes): login, dashboard, habits, challenges, analytics. Admin page and notifications page added | **Done** (partly: see 04) |
-| 9    | Dockerfile, compose stack and LocalStack (Docker or Podman), smoke test through the real event bus, queues, DynamoDB and Lambdas                     | **Done**                  |
-| 10   | CI: lint, typecheck, test, audit, image scan                                                                                                         | Written, not yet run      |
-| 11   | Terraform for every AWS resource in the case study                                                                                                   | Planned                   |
-| 12   | Dashboards, alarms, load test, threat-model review                                                                                                   | Planned                   |
+| Step | Deliverable                                                                                                                                          | Status                                      |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| 1    | Repo scaffold, tooling, architecture docs, Mermaid diagrams, ADRs                                                                                    | **Done**                                    |
+| 2    | Shared packages: kernel, contracts (13 events), observability, config; ESLint boundary rules; Vitest                                                 | **Done**                                    |
+| 3    | Identity Service: Argon2id login, RS256 JWT + JWKS, rotating refresh tokens, roles, teams, audit log, outbox, tests                                  | **Done**                                    |
+| 4    | Habit Service: CRUD, private vs team visibility, reminders, outbox, shared db/outbox/testing packages, tests                                         | **Done**                                    |
+| 5    | Event Tracking: record activity, idempotency, outbox relay to EventBridge, SQS event consumer, Habit handlers wired                                  | **Done**                                    |
+| 6    | Streak Lambda (DynamoDB, conditional writes) and badge Lambda (streak and total milestones)                                                          | **Done**                                    |
+| 7    | Notification, Insight (K-anonymity, pseudonymous aggregates, erasure) and Challenge (scoring ledger, leaderboard, badges) services                   | **Done**                                    |
+| 8    | `packages/ui` web components and the SvelteKit app (runes): login, dashboard, habits, challenges, analytics. Admin page and notifications page added | **Done** (partly: see 04)                   |
+| 9    | Dockerfile, compose stack and LocalStack (Docker or Podman), smoke test through the real event bus, queues, DynamoDB and Lambdas                     | **Done**                                    |
+| 10   | CI: lint, typecheck, test, audit, image scan                                                                                                         | Written, not yet run                        |
+| 11   | Terraform for every AWS resource in the case study                                                                                                   | Planned                                     |
+| 12   | Monitoring definitions and tests, security headers and CSP, rate-limit and client-address fixes, load test, threat-model review                      | **Done** (alarms not yet deployed: step 11) |
 
 ## Open questions for you
 

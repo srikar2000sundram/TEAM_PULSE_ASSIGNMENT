@@ -20,6 +20,9 @@ COPY . .
 # `npm ci` installs exactly what package-lock.json says, so the image matches what was tested.
 RUN npm ci
 RUN npm run build && npm run build -w @teampulse/web
+# The browser may only run the inline script SvelteKit generated: list its hash in the policy.
+RUN node tools/docker/render-security-headers.mjs apps/web/build/index.html \
+    infra/docker/security-headers.conf.template /tmp/security-headers.conf
 
 # Remove everything only needed to build and test (compiler, Vite, Vitest, ...).
 FROM build AS pruned
@@ -47,5 +50,6 @@ USER root
 RUN apk upgrade --no-cache
 USER 101
 COPY infra/docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /tmp/security-headers.conf /etc/nginx/snippets/security-headers.conf
 COPY --from=build /app/apps/web/build /usr/share/nginx/html
 EXPOSE 8080

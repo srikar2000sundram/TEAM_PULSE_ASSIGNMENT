@@ -24,7 +24,12 @@ export interface ServerOptions {
   readonly logger: Logger;
   /** Browser origins allowed to call the API with credentials. Empty disables CORS. */
   readonly corsOrigins?: readonly string[];
-  /** Set when running behind the ALB so client IPs and protocol come from forwarded headers. */
+  /**
+   * Set when running behind exactly one proxy (the ALB in AWS, nginx locally) so the client IP and
+   * protocol come from its forwarded headers. Only that one proxy is trusted: the address it appended
+   * is used, and anything a client put earlier in `X-Forwarded-For` is ignored, so a client cannot
+   * pick its own IP address to dodge a rate limit.
+   */
   readonly trustProxy?: boolean;
   readonly bodyLimitBytes?: number;
   /** Named dependency checks for `/readyz`. Each must reject when its dependency is unusable. */
@@ -63,7 +68,8 @@ export async function createServer(options: ServerOptions): Promise<FastifyInsta
     // We write one structured line per request ourselves, so Fastify never serialises a request
     // object (which could carry headers or tokens) into the log.
     logController: new LogController({ disableRequestLogging: true }),
-    trustProxy: options.trustProxy ?? false,
+    // Trust only the directly connected proxy (hop 0); see the option's comment.
+    trustProxy: options.trustProxy === true ? (_address: string, hop: number) => hop < 1 : false,
     bodyLimit: options.bodyLimitBytes ?? 100 * 1024,
     // The request id IS the correlation id: honour a valid incoming UUID, otherwise create one.
     genReqId: (request) => {

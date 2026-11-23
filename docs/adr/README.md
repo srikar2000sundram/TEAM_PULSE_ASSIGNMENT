@@ -25,6 +25,7 @@ They are immutable once accepted: to change a decision, add a new ADR that super
 | [0018](0018-challenge-scoring-in-the-service.md)      | Challenge scoring and badges in the service   | Proposed |
 | [0019](0019-local-aws-with-localstack.md)             | Local AWS with LocalStack, Docker or Podman   | Proposed |
 | [0020](0020-github-actions-ci.md)                     | GitHub Actions for continuous integration     | Proposed |
+| [0021](0021-log-based-metrics-and-hardening.md)       | Metrics from log lines; step 12 hardening     | Proposed |
 
 Statuses: **Proposed** (awaiting your review), **Accepted**, **Superseded**.
 

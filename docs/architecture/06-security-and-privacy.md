@@ -116,6 +116,9 @@ in [12](12-insight-service.md).
 
 ## Threat model (STRIDE summary)
 
+> This table is the original design. It was reviewed against the code in step 12, with the findings,
+> fixes and remaining gaps in [16](16-observability-and-hardening.md#4-threat-model-review).
+
 | Threat                 | Example                                    | Mitigation                                                        |
 | ---------------------- | ------------------------------------------ | ----------------------------------------------------------------- |
 | Spoofing               | Stolen token replayed                      | Short expiry, refresh rotation, TLS only, httpOnly refresh cookie |
