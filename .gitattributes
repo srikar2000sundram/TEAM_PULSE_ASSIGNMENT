@@ -1,0 +1,2 @@
+# Keep the AWS certificate bundle byte-for-byte: the image build checks its SHA-256.
+infra/docker/certs/*.pem -text

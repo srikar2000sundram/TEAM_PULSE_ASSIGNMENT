@@ -35,6 +35,10 @@ COPY --from=pruned --chown=node:node /app /app
 # its own dependencies from the image, which an attacker could otherwise use and a scanner flags.
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
     /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+# The certificate authorities for Amazon RDS, so the services can verify the database over TLS.
+# The checksum makes the build fail if the file ever changes without review (see certs/README.md).
+COPY --chown=node:node infra/docker/certs/rds-global-bundle.pem /app/certs/rds-global-bundle.pem
+RUN echo "90a6f1a7978a1b1b096dca6c57511ca48d3b8cf052f8e704baf358f34ea2f21b  /app/certs/rds-global-bundle.pem" | sha256sum -c -
 # Never run as root: a flaw in the service must not own the container.
 USER node
 EXPOSE 3000

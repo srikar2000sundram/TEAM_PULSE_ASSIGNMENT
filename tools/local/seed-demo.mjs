@@ -8,17 +8,18 @@
  *   ada@example.com, bo@example.com, cy@example.com, di@example.com, ed@example.com  employees
  * plus an active challenge and a habit for each employee. Safe to run twice: existing people are kept.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const base = process.argv[2] ?? 'http://localhost:8080';
-const envText = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'infra', 'local', '.env'),
-  'utf8',
-);
-const fromEnv = (name) => new RegExp(`^${name}=(.*)$`, 'm').exec(envText)?.[1]?.trim();
-const PASSWORD = 'demo-passphrase-123';
+// The local stack keeps its administrator login in infra/local/.env. For a deployed environment, set
+// ADMIN_EMAIL and ADMIN_PASSWORD in the shell instead (and DEMO_PASSWORD to choose the people's password).
+const envFile = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'infra', 'local', '.env');
+const envText = existsSync(envFile) ? readFileSync(envFile, 'utf8') : '';
+const fromEnv = (name) =>
+  process.env[name] ?? new RegExp(`^${name}=(.*)$`, 'm').exec(envText)?.[1]?.trim();
+const PASSWORD = process.env.DEMO_PASSWORD ?? 'demo-passphrase-123';
 const today = new Date().toISOString().slice(0, 10);
 const nextMonth = new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
 

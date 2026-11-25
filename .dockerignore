@@ -11,3 +11,6 @@
 **/.env
 **/.env.*
 *.pem
+
+# The public AWS RDS certificate authority bundle is not a secret; the image needs it.
+!infra/docker/certs/*.pem
