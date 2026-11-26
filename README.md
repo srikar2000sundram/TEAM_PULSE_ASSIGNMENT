@@ -9,16 +9,16 @@ Based on `Case Study 2 - TeamPulse.pdf` (microservices, SvelteKit with runes, AW
 
 ## Submission index
 
-| #   | Deliverable                                                 | Where                                                                                                                                                                                                            |
-| --- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Source code with commits                                    | this repository: <https://github.com/srikar2000sundram/TEAM_PULSE_ASSIGNMENT>                                                                                                                                    |
-| 2   | Architecture overview, including the Recommendation service | this README, [01 System context](docs/architecture/01-system-context.md), [02 Microservices](docs/architecture/02-microservices.md), [18 Recommendation Service](docs/architecture/18-recommendation-service.md) |
-| 3   | Setup guide (Docker Compose)                                | [docs/SETUP.md](docs/SETUP.md)                                                                                                                                                                                   |
-| 4   | API documentation (OpenAPI), including Recommendation       | [docs/api](docs/api) (an OpenAPI file and a guide per service), [Recommendation API](docs/api/recommendation.md)                                                                                                 |
-| 5   | User walkthrough                                            | [docs/USER-WALKTHROUGH.md](docs/USER-WALKTHROUGH.md)                                                                                                                                                             |
-| 6   | Network architecture diagram                                | [19 Network architecture](docs/architecture/19-network-architecture.md)                                                                                                                                          |
-| 7   | Cloud deployment documentation                              | [17 Terraform](docs/architecture/17-terraform.md); [Deployment record with 59 screenshots](docs/DEPLOYMENT.md); [Build journey, problems and solutions (PDF)](docs/TeamPulse-Build-Journey-and-Challenges.pdf)   |
-| 8   | Demo recording                                              | recorded from the live AWS deployment (login, dashboard, adding an activity, then the AWS console); submitted as a video file, not stored in this repository                                                     |
+| #   | Deliverable                                                 | Where                                                                                                                                                                                                                                                        |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Source code with commits                                    | this repository: <https://github.com/srikar2000sundram/TEAM_PULSE_ASSIGNMENT>                                                                                                                                                                                |
+| 2   | Architecture overview, including the Recommendation service | this README, [01 System context](docs/architecture/01-system-context.md), [02 Microservices](docs/architecture/02-microservices.md), [18 Recommendation Service](docs/architecture/18-recommendation-service.md)                                             |
+| 3   | Setup guide (Docker Compose)                                | [docs/SETUP.md](docs/SETUP.md)                                                                                                                                                                                                                               |
+| 4   | API documentation (OpenAPI), including Recommendation       | [docs/api](docs/api) (an OpenAPI file and a guide per service), [Recommendation API](docs/api/recommendation.md)                                                                                                                                             |
+| 5   | User walkthrough                                            | [docs/USER-WALKTHROUGH.md](docs/USER-WALKTHROUGH.md)                                                                                                                                                                                                         |
+| 6   | Network architecture diagram                                | [19 Network architecture](docs/architecture/19-network-architecture.md)                                                                                                                                                                                      |
+| 7   | Cloud deployment documentation                              | [17 Terraform](docs/architecture/17-terraform.md); [Deployment record with 59 screenshots](docs/DEPLOYMENT.md); [Build journey, problems and solutions (PDF)](docs/TeamPulse-Build-Journey-and-Challenges.pdf)                                               |
+| 8   | Demo recording                                              | recorded from the live AWS deployment (login, dashboard, adding an activity, then the AWS console); video: <https://nagarro-my.sharepoint.com/:v:/p/srikar_sundram/IQCKk4Rb79Q6RZDs-ldHLh4YATPLMa0PSkZ5pIgZvszIZN4?e=dfiziP> (not stored in this repository) |
 
 ## Start here
 
@@ -231,13 +231,13 @@ Services share code only through these packages (see [packages/README.md](packag
 
 ### Not in this repository (kept local on purpose)
 
-| Item                                               | Why                                                                           |
-| -------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `Case Study 2 - TeamPulse.pdf`                     | The source assignment (kept locally; ignored by git).                         |
-| `docs/guides/`                                     | Personal guides, scripts and decks for the demonstration (git-ignored).       |
-| `infra/local/.env`                                 | Generated local secrets.                                                      |
-| `node_modules/`, `dist/`, `build/`, `.svelte-kit/` | Installed or generated files; recreated by `npm install` and `npm run build`. |
-| The demo video                                     | Submitted as a file, not committed.                                           |
+| Item                                               | Why                                                                                                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Case Study 2 - TeamPulse.pdf`                     | The source assignment (kept locally; ignored by git).                                                                                                        |
+| `docs/guides/`                                     | Personal guides, scripts and decks for the demonstration (git-ignored).                                                                                      |
+| `infra/local/.env`                                 | Generated local secrets.                                                                                                                                     |
+| `node_modules/`, `dist/`, `build/`, `.svelte-kit/` | Installed or generated files; recreated by `npm install` and `npm run build`.                                                                                |
+| The demo video                                     | Not committed (too large). Watch it here: <https://nagarro-my.sharepoint.com/:v:/p/srikar_sundram/IQCKk4Rb79Q6RZDs-ldHLh4YATPLMa0PSkZ5pIgZvszIZN4?e=dfiziP>. |
 
 ## Technology
 

@@ -9,6 +9,7 @@ using the same names, sizes and rules as the Terraform files.
 - **Region:** Asia Pacific (Mumbai), `ap-south-1`. CloudFront and the web firewall are global
   services (their API lives in `us-east-1`).
 - **Environment name:** `teampulse-dev`. Every resource name starts with this prefix.
+- **Demo video:** <https://nagarro-my.sharepoint.com/:v:/p/srikar_sundram/IQCKk4Rb79Q6RZDs-ldHLh4YATPLMa0PSkZ5pIgZvszIZN4?e=dfiziP>
 - **Lifetime:** a short-lived environment, built for the demonstration and deleted the same day to
   avoid cost.
 
