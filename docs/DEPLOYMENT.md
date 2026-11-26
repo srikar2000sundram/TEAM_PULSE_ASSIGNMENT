@@ -14,20 +14,19 @@ using the same names, sizes and rules as the Terraform files.
 
 ## 1. Status at the time of writing
 
-| Area                                       | Status                                                                                                    |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| Network, security groups, database, queues | Built and checked                                                                                         |
-| Container image, ECS services, scaling     | Built; all seven services running and healthy behind the load balancer                                    |
-| Lambda functions, event bus, rules         | Built                                                                                                     |
-| Monitoring (logs, metrics, alarms)         | Built                                                                                                     |
-| Website files in the S3 bucket             | Uploaded                                                                                                  |
-| CloudFront distribution                    | **Pending.** AWS requires a new account to be verified before it allows the first CloudFront distribution |
+| Area                                       | Status                                                                                              |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Network, security groups, database, queues | Built and checked                                                                                   |
+| Container image, ECS services, scaling     | Built; all seven services running and healthy behind the load balancer                              |
+| Lambda functions, event bus, rules         | Built                                                                                               |
+| Monitoring (logs, metrics, alarms)         | Built                                                                                               |
+| Website files in the S3 bucket             | Uploaded                                                                                            |
+| CloudFront distribution                    | Created after AWS verified the account (distribution `E1TD36Z4TN4RPR`); the site answers over HTTPS |
 
-CloudFront was refused with the message "Your account must be verified before you can add new
-CloudFront resources" and a support case was opened. Until the account is verified the application
-has no public HTTPS address, so the sign-in and the end-to-end flow could not yet be tested on AWS.
-This section is updated when that changes. The end-to-end flow itself is covered by the automated
-tests in this repository and by the local stack ([Setup guide](SETUP.md)).
+CloudFront was first refused with the message "Your account must be verified before you can add new
+CloudFront resources"; a support case was opened and the distribution was created once AWS had
+verified the account. The services were then rolled to new task definition revisions that carry the
+real CloudFront address, and the flow in section 8 was tested through it.
 
 ## 2. How the assignment's AWS services map to this deployment
 
@@ -132,15 +131,19 @@ _ECS cluster `teampulse-dev`: seven services, one task each, all Active._
   the first administrator.
 - The container image's certificate bundle matched its pinned checksum during the build.
 - Monitoring was created: 75 log metric filters, 87 alarms and one dashboard; two SNS topics exist.
+  An e-mail subscription to both topics was confirmed, and a test alarm state change delivered an
+  alarm e-mail.
+- End to end through CloudFront: the home page and `/api/v1/health` answered 200; a seeded employee
+  signed in; habits, challenges and the personal activity report loaded; marking a habit done today
+  returned 201; the challenge's progress then showed points; the Recommendation Service returned a
+  suggestion (09:00, six of six matching days, high confidence); all nine dead-letter queues held 0
+  messages.
 
 ## 9. Not verified, and known limits
 
-- No end-to-end test on AWS yet (waiting for CloudFront, see section 1). The Lambda functions have
-  not yet been triggered by a real event.
+- The browser screens were not clicked through on AWS for this document; the flow above was tested
+  through the public API. The Lambda functions' own output has not been inspected separately.
 - The Terraform in `infra/terraform` has not been applied or validated by Terraform itself.
-- The services start with a placeholder public address in two settings (`CORS_ORIGINS`,
-  `IDENTITY_JWKS_URL`); new task definition revisions with the real CloudFront address are needed
-  once the distribution exists.
 - The load balancer listens on HTTP only; CloudFront connects to it over HTTP inside AWS. A header
   secret and the security group stop other callers.
 - No secret rotation; the Lambda log salt is a plain environment variable (a limit of the Lambda
